@@ -3,9 +3,4 @@ FROM python:3.9.1-slim-buster
 RUN pip install nibabel
 COPY *.py /usr/local/bin/.
 RUN chmod +x /usr/local/bin/*.py
-ENV PROXY="http://180.167.250.222:18123"
-ENV HTTP_PROXY=${PROXY} \
-    HTTPS_PROXY=${PROXY} \
-    http_proxy=${PROXY} \
-    https_proxy=${PROXY}
 # RUN cd /usr/local/bin/
