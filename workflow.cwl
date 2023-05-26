@@ -32,7 +32,7 @@ steps:
         source: "#submitterUploadSynId"
       # TODO: replace `valueFrom` with the admin user ID or admin team ID
       - id: principalid
-        valueFrom: "3452092"
+        valueFrom: "3472053"  # CMRxRecon admin team id
       - id: permissions
         valueFrom: "download"
       - id: synapse_config
@@ -59,7 +59,7 @@ steps:
     in:
       # TODO: replace `valueFrom` with the Synapse ID to the challenge goldstandard
       - id: synapseid
-        valueFrom: "syn32710728"
+        valueFrom: "syn51583530"  # 一个png图片
       - id: synapse_config
         source: "#synapseConfig"
     out:
