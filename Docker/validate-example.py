@@ -16,6 +16,8 @@ if __name__ == '__main__':
     
     args = get_args()
 
+    # TODO check the submission file
+
     result = {
          'submission_errors': 'Data checking passed',  # 错误原因
          'submission_status': 'VALIDATED'  # INVALID和VALIDATED 两种状态

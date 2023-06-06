@@ -4,8 +4,7 @@ cwlVersion: v1.0
 class: Workflow
 label: <YOUR CHALLENGE> Evaluation
 doc: >
-  This workflow will run and evaluate segmentaion submissions to the Task02 of
-  CMRxMotion Challenge (syn32407769). Metrics returned are Dice score and HD distance.
+  For CMRxRecon validation
 
 requirements:
   - class: StepInputExpressionRequirement
@@ -54,24 +53,24 @@ steps:
       - id: entity_type
       - id: results
       
-  download_goldstandard:
-    run: https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/cwl-tool-synapseclient/v1.4/cwl/synapse-get-tool.cwl
-    in:
-      # TODO: replace `valueFrom` with the Synapse ID to the challenge goldstandard
-      - id: synapseid
-        valueFrom: "syn51583530"  # 一个png图片
-      - id: synapse_config
-        source: "#synapseConfig"
-    out:
-      - id: filepath
+  # download_goldstandard:
+  #   run: https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/cwl-tool-synapseclient/v1.4/cwl/synapse-get-tool.cwl
+  #   in:
+  #     # TODO: replace `valueFrom` with the Synapse ID to the challenge goldstandard
+  #     - id: synapseid
+  #       valueFrom: "syn51583530"  # 一个png图片
+  #     - id: synapse_config
+  #       source: "#synapseConfig"
+  #   out:
+  #     - id: filepath
 
   validate:
     run: steps/validate.cwl
     in:
       - id: input_file
         source: "#download_submission/filepath"
-      - id: goldstandard
-        source: "#download_goldstandard/filepath"
+      # - id: goldstandard
+      #   source: "#download_goldstandard/filepath"
       - id: entity_type
         source: "#download_submission/entity_type"
     out:
@@ -126,8 +125,8 @@ steps:
     in:
       - id: input_file
         source: "#download_submission/filepath"
-      - id: goldstandard
-        source: "#download_goldstandard/filepath"
+      # - id: goldstandard
+      #   source: "#download_goldstandard/filepath"
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:

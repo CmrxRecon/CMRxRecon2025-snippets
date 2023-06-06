@@ -15,7 +15,7 @@ import pandas as pd
 import scipy.io as scio
 import time
 from Evaluation import calmetric, save_metric, memo_metric0, save_df
-from CalEvalMap import CalSaveT2map, EvalMyo, CalSaveT1map
+# from CalEvalMap import CalSaveT2map, EvalMyo, CalSaveT1map
 import gzip
 import tarfile
 import zipfile

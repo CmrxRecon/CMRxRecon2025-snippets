@@ -38,7 +38,8 @@ arguments:
   - prefix: -s
     valueFrom: $(inputs.input_file.path)
   - prefix: -g
-    valueFrom: $(inputs.goldstandard.path)
+    # valueFrom: $(inputs.goldstandard.path)
+    valueFrom: placeholder
   - prefix: -e
     valueFrom: $(inputs.entity_type)
   - prefix: -r

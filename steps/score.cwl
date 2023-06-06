@@ -32,10 +32,13 @@ arguments:
   - prefix: -f
     valueFrom: $(inputs.input_file.path)
   - prefix: -g
-    valueFrom: $(inputs.goldstandard.path)
+    valueFrom: /GT
+  - prefix: -t
+    valueFrom: Cine
+    # 此处根据task1还是task2来指定
   - prefix: -r
     valueFrom: results.json
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn51471092/demo:latest
+    dockerPull: docker.synapse.org/syn51471092/validate:latest
