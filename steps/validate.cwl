@@ -10,8 +10,8 @@ requirements:
 inputs:
   - id: input_file
     type: File
-  - id: goldstandard
-    type: File
+#  - id: goldstandard
+#    type: File
   - id: entity_type
     type: string
 
