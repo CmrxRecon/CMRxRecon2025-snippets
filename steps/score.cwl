@@ -10,8 +10,8 @@ requirements:
 inputs:
   - id: input_file
     type: File
-  - id: goldstandard
-    type: File
+#  - id: goldstandard
+#    type: File
   - id: check_validation_finished
     type: boolean?
 
