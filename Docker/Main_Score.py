@@ -293,12 +293,16 @@ def main():
     # >>> Added by Daryl.Xu, prepare the submission file
     submission_file = args.submissionfile
     if os.path.isfile(submission_file):
-        unzipfile(submission_file)
+
+        # submission_file是只读目录
+        new_path =  'tmp-dir/submission.zip'
+        assert 0 == os.system(f'mkdir tmp-dir && cp {submission_file} {new_path}'), 'Failed to make directory or copy file'
+        unzipfile(new_path)
         # if submission_file.lower().endswith('.tar.gz'):
         #     target_dir = submission_file[:-7]
         # else:
         #     target_dir = submission_file[:-4]
-        dir_name = os.path.dirname(submission_file)
+        dir_name = os.path.dirname(new_path)
         submission_path = os.path.join(dir_name, 'Submission')
         multi_coil_path = os.path.join(dir_name, 'MultiCoil')
         single_coil_path = os.path.join(dir_name, 'SingleCoil')
@@ -309,8 +313,10 @@ def main():
             data_base = dir_name
         else:
             raise RuntimeError("No valid data found, please check the archive file's structure")
-    else:
+    elif os.path.isdir(submission_file):
         data_base = submission_file
+    else:
+        raise RuntimeError('submission_file is not a file or directory, make sure it exist')
     # <<<
 
     # data_base = os.path.join(submission_file, args.task)
