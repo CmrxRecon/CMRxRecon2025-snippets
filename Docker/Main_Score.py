@@ -272,8 +272,12 @@ def CalValue(complete_folders, gt_dir, target_dir, Sub_Task):
 def get_args():
     """Set up command-line interface and get arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--submissionfile", type=str, required=True, help="Submission archive file or the directory contains test directory, and this directory need include MultiCoil or SingleCoil", default="")
-    parser.add_argument("-g", "--goldstandard", type=str,required=True, help="Goldstandard for scoring", default="/home/wangcy/Data/MICCAIChallenge2023/GT/")
+    parser.add_argument("-f", "--submissionfile", type=str, required=True, 
+                        help="""
+                        Submission archive file or the directory contains test directory,
+                        and this directory need include MultiCoil or SingleCoil
+                        """)
+    parser.add_argument("-g", "--goldstandard", type=str,required=True, help="Goldstandard for scoring")
     parser.add_argument("-t","--task", type=str, required=True, default="Cine", help = "Mapping or Cine")
     parser.add_argument("-r", "--results", type=str, required=True, default="results.json", help="Scoring results")
     return parser.parse_args()
