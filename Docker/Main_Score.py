@@ -137,7 +137,9 @@ def unzipfile(fpth):
             raise Exception('Not supported format')
         return folder_dir
     else:
-        raise Exception('Not supported format')
+        # Guess it is a zip file
+        unzip(fpth)
+        # raise Exception('Not supported format')
 
 def save_to_csv(data, filename):
     df = pd.DataFrame(data)
