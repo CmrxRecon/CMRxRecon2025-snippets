@@ -89,6 +89,7 @@ def untar(filename):
     for name in names:
         tar.extract(name, folder_dir)
     tar.close()
+    return folder_dir
 
 '''processing zip file'''
 def unzip(filename):
@@ -100,6 +101,7 @@ def unzip(filename):
     for names in zip_file.namelist():
         zip_file.extract(names, folder_dir)
     zip_file.close()
+    return folder_dir
 
 '''processing rar file'''
 def unrar(filename):
@@ -110,6 +112,7 @@ def unrar(filename):
     os.chdir(folder_dir)
     rar.extractall()
     rar.close()
+    return folder_dir
 
 '''unzip ziped file'''
 def unzipfile(fpth):
@@ -119,20 +122,22 @@ def unzipfile(fpth):
             new_filename = ungz(fpth)
             os.remove(fpth)
             if new_filename.split('.')[-1] == 'tar':
-                untar(new_filename)
+                folder_dir = untar(new_filename)
                 os.remove(new_filename)
         elif suffix == 'tar':
-            untar(fpth)
+            folder_dir = untar(fpth)
             os.remove(fpth)
         elif suffix == 'zip':
-            unzip(fpth)
+            folder_dir = unzip(fpth)
             os.remove(fpth)
         elif suffix == 'rar':
-            unrar(fpth)
+            folder_dir = unrar(fpth)
             os.remove(fpth)
-        return True
+        else:
+            raise Exception('Not supported format')
+        return folder_dir
     else:
-        return False
+        raise Exception('Not supported format')
 
 def save_to_csv(data, filename):
     df = pd.DataFrame(data)
@@ -267,7 +272,7 @@ def CalValue(complete_folders, gt_dir, target_dir, Sub_Task):
 def get_args():
     """Set up command-line interface and get arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--submissionfile", type=str, required=True, help="Submission File", default="/home/wangcy/Data/MICCAIChallenge2023/Submission_ZF/")
+    parser.add_argument("-f", "--submissionfile", type=str, required=True, help="Submission archive file or the directory contains test directory, and this directory need include MultiCoil or SingleCoil", default="")
     parser.add_argument("-g", "--goldstandard", type=str,required=True, help="Goldstandard for scoring", default="/home/wangcy/Data/MICCAIChallenge2023/GT/")
     parser.add_argument("-t","--task", type=str, required=True, default="Cine", help = "Mapping or Cine")
     parser.add_argument("-r", "--results", type=str, required=True, default="results.json", help="Scoring results")
@@ -278,8 +283,31 @@ def main():
     args = get_args()
 
     DataType = 'ValidationSet'
+     
+    # >>> Added by Daryl.Xu, prepare the submission file
+    submission_file = args.submissionfile
+    if os.path.isfile(submission_file):
+        unzipfile(submission_file)
+        # if submission_file.lower().endswith('.tar.gz'):
+        #     target_dir = submission_file[:-7]
+        # else:
+        #     target_dir = submission_file[:-4]
+        dir_name = os.path.dirname(submission_file)
+        submission_path = os.path.join(dir_name, 'Submission')
+        multi_coil_path = os.path.join(dir_name, 'MultiCoil')
+        single_coil_path = os.path.join(dir_name, 'SingleCoil')
+        if os.path.isdir(submission_path):
+            # submission_file = os.path.join(dir_name, 'Submission')
+            data_base = os.path.join(dir_name, 'Submission')
+        elif os.path.isdir(multi_coil_path) or os.path.isdir(single_coil_path):
+            data_base = dir_name
+        else:
+            raise RuntimeError("No valid data found, please check the archive file's structure")
+    else:
+        data_base = submission_file
+    # <<<
 
-    data_base = os.path.join(args.submissionfile, args.task)
+    # data_base = os.path.join(submission_file, args.task)
     
     if args.task == 'Cine':
         Sub_Task = 'lax'
