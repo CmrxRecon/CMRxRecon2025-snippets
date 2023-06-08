@@ -708,7 +708,7 @@ def main():
         for k, v in scores.items():
             print(type(v), v)
             if np.isnan(v):
-                scores[k] = -1
+                scores[k] = None
         results = {
             "submission_status": "SCORED",
             **scores
