@@ -317,8 +317,10 @@ def main():
         data_base = submission_file
     else:
         raise RuntimeError('submission_file is not a file or directory, make sure it exist')
+    # os.system(f'echo ****; ls {data_base};echo *****')
+    print(os.listdir(data_base))
     # <<<
-
+    
     # data_base = os.path.join(submission_file, args.task)
     
     if args.task == 'Cine':

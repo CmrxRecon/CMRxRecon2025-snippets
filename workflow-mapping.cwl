@@ -121,7 +121,7 @@ steps:
     out: [finished]
 
   score:
-    run: steps/score.cwl
+    run: steps/score-mapping.cwl
     in:
       - id: input_file
         source: "#download_submission/filepath"
