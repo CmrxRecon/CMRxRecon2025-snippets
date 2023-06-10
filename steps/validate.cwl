@@ -33,7 +33,7 @@ outputs:
       outputEval: $(JSON.parse(self[0].contents)['submission_errors'])
       loadContents: true
 
-baseCommand: ["python3", "/usr/local/bin/validate-example.py"]
+baseCommand: ["python3", "/app/validate-example.py"]
 arguments:
   - prefix: -s
     valueFrom: $(inputs.input_file.path)
@@ -47,4 +47,4 @@ arguments:
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn51471092/demo:latest
+    dockerPull: docker.synapse.org/syn51471092/validate:latest
