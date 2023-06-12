@@ -898,19 +898,22 @@ def main():
         nmse_08 = get_mean_value(nmse_sax_08, nmse_lax_08)
         nmse_10 = get_mean_value(nmse_sax_10, nmse_lax_10)
         nmse_mean = np.mean([nmse_04, nmse_08, nmse_10])
+        num_files = num_file_lax_04_Single + num_file_lax_08_Single + num_file_lax_10_Single + num_file_sax_04_Single + num_file_sax_08_Single + num_file_sax_10_Single +\
+                         num_file_lax_04_Multi + num_file_lax_08_Multi + num_file_lax_10_Multi + num_file_sax_04_Multi + num_file_sax_08_Multi + num_file_sax_10_Multi
         scores = {
-            "num_file_Lax_04_Single": num_file_lax_04_Single,
-            "num_file_Lax_08_Single": num_file_lax_08_Single,
-            "num_file_Lax_10_Single": num_file_lax_10_Single,
-            "num_file_Sax_04_Single": num_file_sax_04_Single,
-            "num_file_Sax_08_Single": num_file_sax_08_Single,
-            "num_file_Sax_10_Single": num_file_sax_10_Single,
-            "num_file_Lax_04_Multi": num_file_lax_04_Multi,
-            "num_file_Lax_08_Multi": num_file_lax_08_Multi,
-            "num_file_Lax_10_Multi": num_file_lax_10_Multi,
-            "num_file_Sax_04_Multi": num_file_sax_04_Multi,
-            "num_file_Sax_08_Multi": num_file_sax_08_Multi,
-            "num_file_Sax_10_Multi": num_file_sax_10_Multi,
+            "Num_Files": num_files,
+            "num_file_Lax_04_Single": str(num_file_lax_04_Single)+ "/" + str(num_files),
+            "num_file_Lax_08_Single": str(num_file_lax_08_Single)+ "/" + str(num_files),
+            "num_file_Lax_10_Single": str(num_file_lax_10_Single)+ "/" + str(num_files),
+            "num_file_Sax_04_Single": str(num_file_sax_04_Single)+ "/" + str(num_files),
+            "num_file_Sax_08_Single": str(num_file_sax_08_Single)+ "/" + str(num_files),
+            "num_file_Sax_10_Single": str(num_file_sax_10_Single)+ "/" + str(num_files),
+            "num_file_Lax_04_Multi": str(num_file_lax_04_Multi)+ "/" + str(num_files),
+            "num_file_Lax_08_Multi": str(num_file_lax_08_Multi)+ "/" + str(num_files),
+            "num_file_Lax_10_Multi": str(num_file_lax_10_Multi)+ "/" + str(num_files),
+            "num_file_Sax_04_Multi": str(num_file_sax_04_Multi)+ "/" + str(num_files),
+            "num_file_Sax_08_Multi": str(num_file_sax_08_Multi)+ "/" + str(num_files),
+            "num_file_Sax_10_Multi": str(num_file_sax_10_Multi)+ "/" + str(num_files),
             "Single_Lax_04_PSNR": np.mean(psnr_results_lax_04_Single),
             "Single_Lax_08_PSNR": np.mean(psnr_results_lax_08_Single),
             "Single_Lax_10_PSNR": np.mean(psnr_results_lax_10_Single),
@@ -949,9 +952,7 @@ def main():
             "Multi_Sax_10_NMSE": np.mean(nmse_results_sax_10_Multi),
             "Cine_PSNR": psnr_mean,
             "Cine_SSIM": ssim_mean,
-            "Cine_NMSE": nmse_mean,
-            "Num_Files": num_file_lax_04_Single + num_file_lax_08_Single + num_file_lax_10_Single + num_file_sax_04_Single + num_file_sax_08_Single + num_file_sax_10_Single +
-                         num_file_lax_04_Multi + num_file_lax_08_Multi + num_file_lax_10_Multi + num_file_sax_04_Multi + num_file_sax_08_Multi + num_file_sax_10_Multi
+            "Cine_NMSE": nmse_mean
         }
     else:
         psnr_04 = get_mean_value(psnr_T1_04, psnr_T2_04)
@@ -966,19 +967,22 @@ def main():
         nmse_08 = get_mean_value(nmse_T1_08, nmse_T2_08)
         nmse_10 = get_mean_value(nmse_T1_10, nmse_T2_10)
         nmse_mean = np.mean([nmse_04, nmse_08, nmse_10])
+        num_files = num_file_T1_04_Single+num_file_T1_08_Single+num_file_T1_10_Single+num_file_T2_04_Single+num_file_T2_08_Single+num_file_T2_10_Single+\
+                    num_file_T1_04_Multi + num_file_T1_08_Multi + num_file_T1_10_Multi + num_file_T2_04_Multi + num_file_T2_08_Multi + num_file_T2_10_Multi
         scores = {
-            "num_file_T1_04_Single": num_file_T1_04_Single,
-            "num_file_T1_08_Single": num_file_T1_08_Single,
-            "num_file_T1_10_Single": num_file_T1_10_Single,
-            "num_file_T2_04_Single": num_file_T2_04_Single,
-            "num_file_T2_08_Single": num_file_T2_08_Single,
-            "num_file_T2_10_Single": num_file_T2_10_Single,
-            "num_file_T1_04_Multi": num_file_T1_04_Multi,
-            "num_file_T1_08_Multi": num_file_T1_08_Multi,
-            "num_file_T1_10_Multi": num_file_T1_10_Multi,
-            "num_file_T2_04_Multi": num_file_T2_04_Multi,
-            "num_file_T2_08_Multi": num_file_T2_08_Multi,
-            "num_file_T2_10_Multi": num_file_T2_10_Multi,
+            "Num_Files": num_files,
+            "num_file_T1_04_Single": str(num_file_T1_04_Single)+ "/" + str(num_files),
+            "num_file_T1_08_Single": str(num_file_T1_08_Single)+ "/" + str(num_files),
+            "num_file_T1_10_Single": str(num_file_T1_10_Single)+ "/" + str(num_files),
+            "num_file_T2_04_Single": str(num_file_T2_04_Single)+ "/" + str(num_files),
+            "num_file_T2_08_Single": str(num_file_T2_08_Single)+ "/" + str(num_files),
+            "num_file_T2_10_Single": str(num_file_T2_10_Single)+ "/" + str(num_files),
+            "num_file_T1_04_Multi": str(num_file_T1_04_Multi)+ "/" + str(num_files),
+            "num_file_T1_08_Multi": str(num_file_T1_08_Multi)+ "/" + str(num_files),
+            "num_file_T1_10_Multi": str(num_file_T1_10_Multi)+ "/" + str(num_files),
+            "num_file_T2_04_Multi": str(num_file_T2_04_Multi)+ "/" + str(num_files),
+            "num_file_T2_08_Multi": str(num_file_T2_08_Multi)+ "/" + str(num_files),
+            "num_file_T2_10_Multi": str(num_file_T2_10_Multi)+ "/" + str(num_files),
             "Single_T1_04_PSNR": np.mean(psnr_results_T1_04_Single),
             "Single_T1_08_PSNR": np.mean(psnr_results_T1_08_Single),
             "Single_T1_10_PSNR": np.mean(psnr_results_T1_10_Single),
@@ -1017,20 +1021,19 @@ def main():
             "Multi_T2_10_NMSE": np.mean(nmse_results_T2_10_Multi),
             "Mapping_PSNR": psnr_mean,
             "Mapping_SSIM": ssim_mean,
-            "Mapping_NMSE": nmse_mean,
-            "Num_Files":num_file_T1_04_Single+num_file_T1_08_Single+num_file_T1_10_Single+num_file_T2_04_Single+num_file_T2_08_Single+num_file_T2_10_Single+
-                        num_file_T1_04_Multi + num_file_T1_08_Multi + num_file_T1_10_Multi + num_file_T2_04_Multi + num_file_T2_08_Multi + num_file_T2_10_Multi
+            "Mapping_NMSE": nmse_mean
         }
     with open(args.results, "w") as out:
-        for k, v in scores.items():
-            print(type(v), v)
-            if np.isnan(v):
-                scores[k] = None
+        # for k, v in scores.items():
+        #     print(type(v), v)
+        #     if np.isnan(v):
+        #         scores[k] = None
         results = {
             "submission_status": "SCORED",
             **scores
         }
         out.write(json.dumps(results))
+    assert 0 == os.system('zip better_log.zip *.json')
     print('All checked!')
 
 if __name__ == "__main__":
