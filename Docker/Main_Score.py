@@ -1047,10 +1047,10 @@ def main():
             "Mapping_NMSE": nmse_mean
         }
     with open(args.results, "w") as out:
-        # for k, v in scores.items():
-        #     print(type(v), v)
-        #     if np.isnan(v):
-        #         scores[k] = None
+         for k, v in scores.items():
+             print(type(v), v)
+             if type(v) != str and  np.isnan(v):
+                 scores[k] = None
         results = {
             "submission_status": "SCORED",
             **scores
