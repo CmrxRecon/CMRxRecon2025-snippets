@@ -20,6 +20,10 @@ outputs:
     type: File
     outputBinding:
       glob: results.json
+  - id: log_file
+    type: File
+    outputBinding:
+      glob: better_log.zip
   - id: status
     type: string
     outputBinding:

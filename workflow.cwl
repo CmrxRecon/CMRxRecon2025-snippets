@@ -131,6 +131,14 @@ steps:
         source: "#check_status/finished"
     out:
       - id: results
+      - id: log_zip
+
+  upload_log_file:
+    run: steps/upload_log_file.cwl
+    in: 
+      - id: log_file
+        source: #score/log_zip
+    out: []
       
   email_score:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
