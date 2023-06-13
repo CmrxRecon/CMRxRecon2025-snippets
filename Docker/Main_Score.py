@@ -171,7 +171,8 @@ def check_mat_files(path1, path2, folder_names, Sub_Task):
     openfail_files = []
 
     complete_folders = folder_names.copy()
-    num_file = 0
+    gt_num_file = 0
+    task_num_file = 0
     for folder_name in folder_names:
         folder_path1 = os.path.join(path1, folder_name)
         folder_path2 = os.path.join(path2, folder_name)
@@ -192,8 +193,9 @@ def check_mat_files(path1, path2, folder_names, Sub_Task):
             # 打开MAT文件
             try:
                 dataset1 = loadmat(mat_file_path1)
+                gt_num_file = gt_num_file+1
                 dataset2 = loadmat(mat_file_path2)
-                num_file = num_file+1
+                task_num_file = task_num_file+1
             except OSError as e:
                 openfail_files.append(mat_file_path2)
                 complete_folders.remove(folder_name)
@@ -209,14 +211,14 @@ def check_mat_files(path1, path2, folder_names, Sub_Task):
         else:
             complete_folders.remove(folder_name)
 
-    return flag, different_sizes, missing_files, openfail_files, complete_folders, num_file
+    return flag, different_sizes, missing_files, openfail_files, complete_folders, task_num_file, gt_num_file
 
 def check_mapping_data(gt_dir, target_dir, R, Sub_Task):
     flag_folder, missing_folders, submit_folders = compare_folder_names(gt_dir, target_dir)
-    flag_file, different_sizes, missing_files, openfail_files, complete_folders, num_file = check_mat_files(gt_dir, target_dir,
+    flag_file, different_sizes, missing_files, openfail_files, complete_folders, task_num_file, gt_num_file = check_mat_files(gt_dir, target_dir,
                                                                                                   submit_folders,Sub_Task)
 
-    return flag_folder, missing_folders, submit_folders, flag_file, different_sizes, missing_files, openfail_files, complete_folders, num_file
+    return flag_folder, missing_folders, submit_folders, flag_file, different_sizes, missing_files, openfail_files, complete_folders, task_num_file, gt_num_file
 
 def CalValue(complete_folders, gt_dir, target_dir, Sub_Task):
     target_dir = target_dir
@@ -314,11 +316,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
     
-        flag_folder_lax_04_Single, missing_folders_lax_04_Single, submit_folders_lax_04_Single, flag_file_lax_04_Single, different_sizes_lax_04_Single, missing_files_lax_04_Single, openfail_files_lax_04_Single, complete_folders_lax_04_Single, num_file_lax_04_Single = check_mapping_data(
+        flag_folder_lax_04_Single, missing_folders_lax_04_Single, submit_folders_lax_04_Single, flag_file_lax_04_Single, different_sizes_lax_04_Single, missing_files_lax_04_Single, openfail_files_lax_04_Single, complete_folders_lax_04_Single, num_task_lax_04_Single, num_gt_lax_04_Single = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_lax_08_Single, missing_folders_lax_08_Single, submit_folders_lax_08_Single, flag_file_lax_08_Single, different_sizes_lax_08_Single, missing_files_lax_08_Single, openfail_files_lax_08_Single, complete_folders_lax_08_Single, num_file_lax_08_Single = check_mapping_data(
+        flag_folder_lax_08_Single, missing_folders_lax_08_Single, submit_folders_lax_08_Single, flag_file_lax_08_Single, different_sizes_lax_08_Single, missing_files_lax_08_Single, openfail_files_lax_08_Single, complete_folders_lax_08_Single, num_task_lax_08_Single, num_gt_lax_08_Single = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_lax_10_Single, missing_folders_lax_10_Single, submit_folders_lax_10_Single, flag_file_lax_10_Single, different_sizes_lax_10_Single, missing_files_lax_10_Single, openfail_files_lax_10_Single, complete_folders_lax_10_Single, num_file_lax_10_Single = check_mapping_data(
+        flag_folder_lax_10_Single, missing_folders_lax_10_Single, submit_folders_lax_10_Single, flag_file_lax_10_Single, different_sizes_lax_10_Single, missing_files_lax_10_Single, openfail_files_lax_10_Single, complete_folders_lax_10_Single, num_task_lax_10_Single, num_gt_lax_10_Single = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         variables = {
@@ -331,7 +333,8 @@ def main():
                 "missing_files": missing_files_lax_04_Single,
                 "openfail_files": openfail_files_lax_04_Single,
                 "complete_folders": complete_folders_lax_04_Single,
-                "num_file": num_file_lax_04_Single
+                "num_task_file": num_task_lax_04_Single,
+                "num_gt_file": num_gt_lax_04_Single
             },
             "lax_08_Single": {
                 "flag_folder": flag_folder_lax_08_Single,
@@ -342,7 +345,8 @@ def main():
                 "missing_files": missing_files_lax_08_Single,
                 "openfail_files": openfail_files_lax_08_Single,
                 "complete_folders": complete_folders_lax_08_Single,
-                "num_file": num_file_lax_08_Single
+                "num_task_file": num_task_lax_08_Single,
+                "num_gt_file": num_gt_lax_08_Single
             },
             "lax_10_Single": {
                 "flag_folder": flag_folder_lax_10_Single,
@@ -353,7 +357,8 @@ def main():
                 "missing_files": missing_files_lax_10_Single,
                 "openfail_files": openfail_files_lax_10_Single,
                 "complete_folders": complete_folders_lax_10_Single,
-                "num_file": num_file_lax_10_Single
+                "num_task_file": num_task_lax_10_Single,
+                "num_gt_file": num_gt_lax_10_Single
             }
         }
 
@@ -380,11 +385,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
     
-        flag_folder_lax_04_Multi, missing_folders_lax_04_Multi, submit_folders_lax_04_Multi, flag_file_lax_04_Multi, different_sizes_lax_04_Multi, missing_files_lax_04_Multi, openfail_files_lax_04_Multi, complete_folders_lax_04_Multi, num_file_lax_04_Multi = check_mapping_data(
+        flag_folder_lax_04_Multi, missing_folders_lax_04_Multi, submit_folders_lax_04_Multi, flag_file_lax_04_Multi, different_sizes_lax_04_Multi, missing_files_lax_04_Multi, openfail_files_lax_04_Multi, complete_folders_lax_04_Multi, num_task_lax_04_Multi, num_gt_lax_04_Multi = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_lax_08_Multi, missing_folders_lax_08_Multi, submit_folders_lax_08_Multi, flag_file_lax_08_Multi, different_sizes_lax_08_Multi, missing_files_lax_08_Multi, openfail_files_lax_08_Multi, complete_folders_lax_08_Multi, num_file_lax_08_Multi = check_mapping_data(
+        flag_folder_lax_08_Multi, missing_folders_lax_08_Multi, submit_folders_lax_08_Multi, flag_file_lax_08_Multi, different_sizes_lax_08_Multi, missing_files_lax_08_Multi, openfail_files_lax_08_Multi, complete_folders_lax_08_Multi, num_task_lax_08_Multi, num_gt_lax_08_Multi = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_lax_10_Multi, missing_folders_lax_10_Multi, submit_folders_lax_10_Multi, flag_file_lax_10_Multi, different_sizes_lax_10_Multi, missing_files_lax_10_Multi, openfail_files_lax_10_Multi, complete_folders_lax_10_Multi, num_file_lax_10_Multi = check_mapping_data(
+        flag_folder_lax_10_Multi, missing_folders_lax_10_Multi, submit_folders_lax_10_Multi, flag_file_lax_10_Multi, different_sizes_lax_10_Multi, missing_files_lax_10_Multi, openfail_files_lax_10_Multi, complete_folders_lax_10_Multi, num_task_lax_10_Multi, num_gt_lax_10_Multi = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         variables = {
@@ -397,7 +402,8 @@ def main():
                 "missing_files": missing_files_lax_04_Multi,
                 "openfail_files": openfail_files_lax_04_Multi,
                 "complete_folders": complete_folders_lax_04_Multi,
-                "num_file": num_file_lax_04_Multi
+                "num_task_file": num_task_lax_04_Multi,
+                "num_gt_file": num_gt_lax_04_Multi
             },
             "lax_08_Multi": {
                 "flag_folder": flag_folder_lax_08_Multi,
@@ -408,7 +414,8 @@ def main():
                 "missing_files": missing_files_lax_08_Multi,
                 "openfail_files": openfail_files_lax_08_Multi,
                 "complete_folders": complete_folders_lax_08_Multi,
-                "num_file": num_file_lax_08_Multi
+                "num_task_file": num_task_lax_08_Multi,
+                "num_gt_file": num_gt_lax_08_Multi
             },
             "lax_10_Multi": {
                 "flag_folder": flag_folder_lax_10_Multi,
@@ -419,7 +426,8 @@ def main():
                 "missing_files": missing_files_lax_10_Multi,
                 "openfail_files": openfail_files_lax_10_Multi,
                 "complete_folders": complete_folders_lax_10_Multi,
-                "num_file": num_file_lax_10_Multi
+                "num_task_file": num_task_lax_10_Multi,
+                "num_gt_file": num_gt_lax_10_Multi
             }
         }
 
@@ -460,11 +468,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
     
-        flag_folder_sax_04_Single, missing_folders_sax_04_Single, submit_folders_sax_04_Single, flag_file_sax_04_Single, different_sizes_sax_04_Single, missing_files_sax_04_Single, openfail_files_sax_04_Single, complete_folders_sax_04_Single, num_file_sax_04_Single = check_mapping_data(
+        flag_folder_sax_04_Single, missing_folders_sax_04_Single, submit_folders_sax_04_Single, flag_file_sax_04_Single, different_sizes_sax_04_Single, missing_files_sax_04_Single, openfail_files_sax_04_Single, complete_folders_sax_04_Single, num_task_sax_04_Single, num_gt_sax_04_Single = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_sax_08_Single, missing_folders_sax_08_Single, submit_folders_sax_08_Single, flag_file_sax_08_Single, different_sizes_sax_08_Single, missing_files_sax_08_Single, openfail_files_sax_08_Single, complete_folders_sax_08_Single, num_file_sax_08_Single = check_mapping_data(
+        flag_folder_sax_08_Single, missing_folders_sax_08_Single, submit_folders_sax_08_Single, flag_file_sax_08_Single, different_sizes_sax_08_Single, missing_files_sax_08_Single, openfail_files_sax_08_Single, complete_folders_sax_08_Single, num_task_sax_08_Single, num_gt_sax_08_Single = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_sax_10_Single, missing_folders_sax_10_Single, submit_folders_sax_10_Single, flag_file_sax_10_Single, different_sizes_sax_10_Single, missing_files_sax_10_Single, openfail_files_sax_10_Single, complete_folders_sax_10_Single, num_file_sax_10_Single = check_mapping_data(
+        flag_folder_sax_10_Single, missing_folders_sax_10_Single, submit_folders_sax_10_Single, flag_file_sax_10_Single, different_sizes_sax_10_Single, missing_files_sax_10_Single, openfail_files_sax_10_Single, complete_folders_sax_10_Single, num_task_sax_10_Single, num_gt_sax_10_Single = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         variables = {
@@ -477,7 +485,8 @@ def main():
                 "missing_files": missing_files_sax_04_Single,
                 "openfail_files": openfail_files_sax_04_Single,
                 "complete_folders": complete_folders_sax_04_Single,
-                "num_file": num_file_sax_04_Single
+                "num_task_file": num_task_sax_04_Single,
+                "num_gt_file": num_gt_sax_04_Single
             },
             "sax_08_Single": {
                 "flag_folder": flag_folder_sax_08_Single,
@@ -488,7 +497,8 @@ def main():
                 "missing_files": missing_files_sax_08_Single,
                 "openfail_files": openfail_files_sax_08_Single,
                 "complete_folders": complete_folders_sax_08_Single,
-                "num_file": num_file_sax_08_Single
+                "num_task_file": num_task_lax_08_Single,
+                "num_gt_file": num_gt_lax_08_Single
             },
             "sax_10_Single": {
                 "flag_folder": flag_folder_sax_10_Single,
@@ -499,7 +509,8 @@ def main():
                 "missing_files": missing_files_sax_10_Single,
                 "openfail_files": openfail_files_sax_10_Single,
                 "complete_folders": complete_folders_sax_10_Single,
-                "num_file": num_file_sax_10_Single
+                "num_task_file": num_task_lax_10_Single,
+                "num_gt_file": num_gt_lax_10_Single
             }
         }
 
@@ -526,11 +537,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
     
-        flag_folder_sax_04_Multi, missing_folders_sax_04_Multi, submit_folders_sax_04_Multi, flag_file_sax_04_Multi, different_sizes_sax_04_Multi, missing_files_sax_04_Multi, openfail_files_sax_04_Multi, complete_folders_sax_04_Multi, num_file_sax_04_Multi = check_mapping_data(
+        flag_folder_sax_04_Multi, missing_folders_sax_04_Multi, submit_folders_sax_04_Multi, flag_file_sax_04_Multi, different_sizes_sax_04_Multi, missing_files_sax_04_Multi, openfail_files_sax_04_Multi, complete_folders_sax_04_Multi, num_task_sax_04_Multi, num_gt_sax_04_Multi = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_sax_08_Multi, missing_folders_sax_08_Multi, submit_folders_sax_08_Multi, flag_file_sax_08_Multi, different_sizes_sax_08_Multi, missing_files_sax_08_Multi, openfail_files_sax_08_Multi, complete_folders_sax_08_Multi, num_file_sax_08_Multi = check_mapping_data(
+        flag_folder_sax_08_Multi, missing_folders_sax_08_Multi, submit_folders_sax_08_Multi, flag_file_sax_08_Multi, different_sizes_sax_08_Multi, missing_files_sax_08_Multi, openfail_files_sax_08_Multi, complete_folders_sax_08_Multi, num_task_sax_08_Multi, num_gt_sax_08_Multi = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_sax_10_Multi, missing_folders_sax_10_Multi, submit_folders_sax_10_Multi, flag_file_sax_10_Multi, different_sizes_sax_10_Multi, missing_files_sax_10_Multi, openfail_files_sax_10_Multi, complete_folders_sax_10_Multi, num_file_sax_10_Multi = check_mapping_data(
+        flag_folder_sax_10_Multi, missing_folders_sax_10_Multi, submit_folders_sax_10_Multi, flag_file_sax_10_Multi, different_sizes_sax_10_Multi, missing_files_sax_10_Multi, openfail_files_sax_10_Multi, complete_folders_sax_10_Multi, num_task_sax_10_Multi, num_gt_sax_10_Multi = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         variables = {
@@ -543,7 +554,8 @@ def main():
                 "missing_files": missing_files_sax_04_Multi,
                 "openfail_files": openfail_files_sax_04_Multi,
                 "complete_folders": complete_folders_sax_04_Multi,
-                "num_file": num_file_sax_04_Multi
+                "num_task_file": num_task_sax_04_Multi,
+                "num_gt_file": num_gt_sax_04_Multi
             },
             "sax_08_Multi": {
                 "flag_folder": flag_folder_sax_08_Multi,
@@ -554,7 +566,8 @@ def main():
                 "missing_files": missing_files_sax_08_Multi,
                 "openfail_files": openfail_files_sax_08_Multi,
                 "complete_folders": complete_folders_sax_08_Multi,
-                "num_file": num_file_sax_08_Multi
+                "num_task_file": num_task_sax_08_Multi,
+                "num_gt_file": num_gt_sax_08_Multi
             },
             "sax_10_Multi": {
                 "flag_folder": flag_folder_sax_10_Multi,
@@ -565,7 +578,8 @@ def main():
                 "missing_files": missing_files_sax_10_Multi,
                 "openfail_files": openfail_files_sax_10_Multi,
                 "complete_folders": complete_folders_sax_10_Multi,
-                "num_file": num_file_sax_10_Multi
+                "num_task_file": num_task_sax_10_Multi,
+                "num_gt_file": num_gt_sax_10_Multi
             }
         }
 
@@ -606,11 +620,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
 
-        flag_folder_T1_04_Single, missing_folders_T1_04_Single, submit_folders_T1_04_Single, flag_file_T1_04_Single, different_sizes_T1_04_Single, missing_files_T1_04_Single, openfail_files_T1_04_Single, complete_folders_T1_04_Single, num_file_T1_04_Single = check_mapping_data(
+        flag_folder_T1_04_Single, missing_folders_T1_04_Single, submit_folders_T1_04_Single, flag_file_T1_04_Single, different_sizes_T1_04_Single, missing_files_T1_04_Single, openfail_files_T1_04_Single, complete_folders_T1_04_Single, num_task_T1_04_Single, num_gt_T1_04_Single  = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_T1_08_Single, missing_folders_T1_08_Single, submit_folders_T1_08_Single, flag_file_T1_08_Single, different_sizes_T1_08_Single, missing_files_T1_08_Single, openfail_files_T1_08_Single, complete_folders_T1_08_Single, num_file_T1_08_Single = check_mapping_data(
+        flag_folder_T1_08_Single, missing_folders_T1_08_Single, submit_folders_T1_08_Single, flag_file_T1_08_Single, different_sizes_T1_08_Single, missing_files_T1_08_Single, openfail_files_T1_08_Single, complete_folders_T1_08_Single, num_task_T1_08_Single, num_gt_T1_08_Single  = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_T1_10_Single, missing_folders_T1_10_Single, submit_folders_T1_10_Single, flag_file_T1_10_Single, different_sizes_T1_10_Single, missing_files_T1_10_Single, openfail_files_T1_10_Single, complete_folders_T1_10_Single, num_file_T1_10_Single = check_mapping_data(
+        flag_folder_T1_10_Single, missing_folders_T1_10_Single, submit_folders_T1_10_Single, flag_file_T1_10_Single, different_sizes_T1_10_Single, missing_files_T1_10_Single, openfail_files_T1_10_Single, complete_folders_T1_10_Single, num_task_T1_10_Single, num_gt_T1_10_Single  = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         data = {
@@ -623,7 +637,8 @@ def main():
                 "missing_files": missing_files_T1_04_Single,
                 "openfail_files": openfail_files_T1_04_Single,
                 "complete_folders": complete_folders_T1_04_Single,
-                "num_file": num_file_T1_04_Single
+                "num_task_file": num_task_T1_04_Single,
+                "num_gt_file": num_gt_T1_04_Single
             },
             "T1_08_Single": {
                 "flag_folder": flag_folder_T1_08_Single,
@@ -634,7 +649,8 @@ def main():
                 "missing_files": missing_files_T1_08_Single,
                 "openfail_files": openfail_files_T1_08_Single,
                 "complete_folders": complete_folders_T1_08_Single,
-                "num_file": num_file_T1_08_Single
+                "num_task_file": num_task_T1_08_Single,
+                "num_gt_file": num_gt_T1_08_Single
             },
             "T1_10_Single": {
                 "flag_folder": flag_folder_T1_10_Single,
@@ -645,7 +661,8 @@ def main():
                 "missing_files": missing_files_T1_10_Single,
                 "openfail_files": openfail_files_T1_10_Single,
                 "complete_folders": complete_folders_T1_10_Single,
-                "num_file": num_file_T1_10_Single
+                "num_task_file": num_task_T1_10_Single,
+                "num_gt_file": num_gt_T1_10_Single
             }
         }
 
@@ -672,11 +689,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
 
-        flag_folder_T1_04_Multi, missing_folders_T1_04_Multi, submit_folders_T1_04_Multi, flag_file_T1_04_Multi, different_sizes_T1_04_Multi, missing_files_T1_04_Multi, openfail_files_T1_04_Multi, complete_folders_T1_04_Multi, num_file_T1_04_Multi = check_mapping_data(
+        flag_folder_T1_04_Multi, missing_folders_T1_04_Multi, submit_folders_T1_04_Multi, flag_file_T1_04_Multi, different_sizes_T1_04_Multi, missing_files_T1_04_Multi, openfail_files_T1_04_Multi, complete_folders_T1_04_Multi, num_task_T1_04_Multi, num_gt_T1_04_Multi  = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_T1_08_Multi, missing_folders_T1_08_Multi, submit_folders_T1_08_Multi, flag_file_T1_08_Multi, different_sizes_T1_08_Multi, missing_files_T1_08_Multi, openfail_files_T1_08_Multi, complete_folders_T1_08_Multi, num_file_T1_08_Multi = check_mapping_data(
+        flag_folder_T1_08_Multi, missing_folders_T1_08_Multi, submit_folders_T1_08_Multi, flag_file_T1_08_Multi, different_sizes_T1_08_Multi, missing_files_T1_08_Multi, openfail_files_T1_08_Multi, complete_folders_T1_08_Multi, num_task_T1_08_Multi, num_gt_T1_08_Multi  = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_T1_10_Multi, missing_folders_T1_10_Multi, submit_folders_T1_10_Multi, flag_file_T1_10_Multi, different_sizes_T1_10_Multi, missing_files_T1_10_Multi, openfail_files_T1_10_Multi, complete_folders_T1_10_Multi, num_file_T1_10_Multi = check_mapping_data(
+        flag_folder_T1_10_Multi, missing_folders_T1_10_Multi, submit_folders_T1_10_Multi, flag_file_T1_10_Multi, different_sizes_T1_10_Multi, missing_files_T1_10_Multi, openfail_files_T1_10_Multi, complete_folders_T1_10_Multi, num_task_T1_10_Multi, num_gt_T1_10_Multi  = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         variables = {
@@ -689,7 +706,8 @@ def main():
                 "missing_files": missing_files_T1_04_Multi,
                 "openfail_files": openfail_files_T1_04_Multi,
                 "complete_folders": complete_folders_T1_04_Multi,
-                "num_file": num_file_T1_04_Multi
+                "num_task_file": num_task_T1_04_Multi,
+                "num_gt_file": num_gt_T1_04_Multi
             },
             "T1_08_Multi": {
                 "flag_folder": flag_folder_T1_08_Multi,
@@ -700,7 +718,8 @@ def main():
                 "missing_files": missing_files_T1_08_Multi,
                 "openfail_files": openfail_files_T1_08_Multi,
                 "complete_folders": complete_folders_T1_08_Multi,
-                "num_file": num_file_T1_08_Multi
+                "num_task_file": num_task_T1_08_Multi,
+                "num_gt_file": num_gt_T1_08_Multi
             },
             "T1_10_Multi": {
                 "flag_folder": flag_folder_T1_10_Multi,
@@ -711,7 +730,8 @@ def main():
                 "missing_files": missing_files_T1_10_Multi,
                 "openfail_files": openfail_files_T1_10_Multi,
                 "complete_folders": complete_folders_T1_10_Multi,
-                "num_file": num_file_T1_10_Multi
+                "num_task_file": num_task_T1_10_Multi,
+                "num_gt_file": num_gt_T1_10_Multi
             }
         }
 
@@ -752,11 +772,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
 
-        flag_folder_T2_04_Single, missing_folders_T2_04_Single, submit_folders_T2_04_Single, flag_file_T2_04_Single, different_sizes_T2_04_Single, missing_files_T2_04_Single, openfail_files_T2_04_Single, complete_folders_T2_04_Single, num_file_T2_04_Single = check_mapping_data(
+        flag_folder_T2_04_Single, missing_folders_T2_04_Single, submit_folders_T2_04_Single, flag_file_T2_04_Single, different_sizes_T2_04_Single, missing_files_T2_04_Single, openfail_files_T2_04_Single, complete_folders_T2_04_Single, num_task_T2_04_Single, num_gt_T2_04_Single = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_T2_08_Single, missing_folders_T2_08_Single, submit_folders_T2_08_Single, flag_file_T2_08_Single, different_sizes_T2_08_Single, missing_files_T2_08_Single, openfail_files_T2_08_Single, complete_folders_T2_08_Single, num_file_T2_08_Single = check_mapping_data(
+        flag_folder_T2_08_Single, missing_folders_T2_08_Single, submit_folders_T2_08_Single, flag_file_T2_08_Single, different_sizes_T2_08_Single, missing_files_T2_08_Single, openfail_files_T2_08_Single, complete_folders_T2_08_Single, num_task_T2_08_Single, num_gt_T2_08_Single = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_T2_10_Single, missing_folders_T2_10_Single, submit_folders_T2_10_Single, flag_file_T2_10_Single, different_sizes_T2_10_Single, missing_files_T2_10_Single, openfail_files_T2_10_Single, complete_folders_T2_10_Single, num_file_T2_10_Single = check_mapping_data(
+        flag_folder_T2_10_Single, missing_folders_T2_10_Single, submit_folders_T2_10_Single, flag_file_T2_10_Single, different_sizes_T2_10_Single, missing_files_T2_10_Single, openfail_files_T2_10_Single, complete_folders_T2_10_Single, num_task_T2_10_Single, num_gt_T2_10_Single = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
         variables = {
             "T2_04_Single": {
@@ -768,7 +788,8 @@ def main():
                 "missing_files": missing_files_T2_04_Single,
                 "openfail_files": openfail_files_T2_04_Single,
                 "complete_folders": complete_folders_T2_04_Single,
-                "num_file": num_file_T2_04_Single
+                "num_task_file": num_task_T2_04_Single,
+                "num_gt_file": num_gt_T2_04_Single
             },
             "T2_08_Single": {
                 "flag_folder": flag_folder_T2_08_Single,
@@ -779,7 +800,8 @@ def main():
                 "missing_files": missing_files_T2_08_Single,
                 "openfail_files": openfail_files_T2_08_Single,
                 "complete_folders": complete_folders_T2_08_Single,
-                "num_file": num_file_T2_08_Single
+                "num_task_file": num_task_T2_08_Single,
+                "num_gt_file": num_gt_T2_08_Single
             },
             "T2_10_Single": {
                 "flag_folder": flag_folder_T2_10_Single,
@@ -790,7 +812,8 @@ def main():
                 "missing_files": missing_files_T2_10_Single,
                 "openfail_files": openfail_files_T2_10_Single,
                 "complete_folders": complete_folders_T2_10_Single,
-                "num_file": num_file_T2_10_Single
+                "num_task_file": num_task_T2_10_Single,
+                "num_gt_file": num_gt_T2_10_Single
             }
         }
 
@@ -818,11 +841,11 @@ def main():
         gt_dir08 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor08')
         gt_dir10 = os.path.join(args.goldstandard, args.task, Coil_Type, args.task, DataType, 'AccFactor10')
 
-        flag_folder_T2_04_Multi, missing_folders_T2_04_Multi, submit_folders_T2_04_Multi, flag_file_T2_04_Multi, different_sizes_T2_04_Multi, missing_files_T2_04_Multi, openfail_files_T2_04_Multi, complete_folders_T2_04_Multi, num_file_T2_04_Multi = check_mapping_data(
+        flag_folder_T2_04_Multi, missing_folders_T2_04_Multi, submit_folders_T2_04_Multi, flag_file_T2_04_Multi, different_sizes_T2_04_Multi, missing_files_T2_04_Multi, openfail_files_T2_04_Multi, complete_folders_T2_04_Multi, num_task_T2_04_Multi, num_gt_T2_04_Multi  = check_mapping_data(
             gt_dir04, target_dir04, '04', Sub_Task)
-        flag_folder_T2_08_Multi, missing_folders_T2_08_Multi, submit_folders_T2_08_Multi, flag_file_T2_08_Multi, different_sizes_T2_08_Multi, missing_files_T2_08_Multi, openfail_files_T2_08_Multi, complete_folders_T2_08_Multi, num_file_T2_08_Multi = check_mapping_data(
+        flag_folder_T2_08_Multi, missing_folders_T2_08_Multi, submit_folders_T2_08_Multi, flag_file_T2_08_Multi, different_sizes_T2_08_Multi, missing_files_T2_08_Multi, openfail_files_T2_08_Multi, complete_folders_T2_08_Multi, num_task_T2_08_Multi, num_gt_T2_08_Multi  = check_mapping_data(
             gt_dir08, target_dir08, '08', Sub_Task)
-        flag_folder_T2_10_Multi, missing_folders_T2_10_Multi, submit_folders_T2_10_Multi, flag_file_T2_10_Multi, different_sizes_T2_10_Multi, missing_files_T2_10_Multi, openfail_files_T2_10_Multi, complete_folders_T2_10_Multi, num_file_T2_10_Multi = check_mapping_data(
+        flag_folder_T2_10_Multi, missing_folders_T2_10_Multi, submit_folders_T2_10_Multi, flag_file_T2_10_Multi, different_sizes_T2_10_Multi, missing_files_T2_10_Multi, openfail_files_T2_10_Multi, complete_folders_T2_10_Multi, num_task_T2_10_Multi, num_gt_T2_10_Multi  = check_mapping_data(
             gt_dir10, target_dir10, '10', Sub_Task)
 
         variables = {
@@ -835,7 +858,8 @@ def main():
                 "missing_files": missing_files_T2_04_Multi,
                 "openfail_files": openfail_files_T2_04_Multi,
                 "complete_folders": complete_folders_T2_04_Multi,
-                "num_file": num_file_T2_04_Multi
+                "num_task_file": num_task_T2_04_Multi,
+                "num_gt_file": num_gt_T2_04_Multi
             },
             "T2_08_Multi": {
                 "flag_folder": flag_folder_T2_08_Multi,
@@ -846,7 +870,8 @@ def main():
                 "missing_files": missing_files_T2_08_Multi,
                 "openfail_files": openfail_files_T2_08_Multi,
                 "complete_folders": complete_folders_T2_08_Multi,
-                "num_file": num_file_T2_08_Multi
+                "num_task_file": num_task_T2_08_Multi,
+                "num_gt_file": num_gt_T2_08_Multi
             },
             "T2_10_Multi": {
                 "flag_folder": flag_folder_T2_10_Multi,
@@ -857,7 +882,8 @@ def main():
                 "missing_files": missing_files_T2_10_Multi,
                 "openfail_files": openfail_files_T2_10_Multi,
                 "complete_folders": complete_folders_T2_10_Multi,
-                "num_file": num_file_T2_10_Multi
+                "num_task_file": num_task_T2_10_Multi,
+                "num_gt_file": num_gt_T2_10_Multi
             }
         }
 
@@ -898,22 +924,21 @@ def main():
         nmse_08 = get_mean_value(nmse_sax_08, nmse_lax_08)
         nmse_10 = get_mean_value(nmse_sax_10, nmse_lax_10)
         nmse_mean = np.mean([nmse_04, nmse_08, nmse_10])
-        num_files = num_file_lax_04_Single + num_file_lax_08_Single + num_file_lax_10_Single + num_file_sax_04_Single + num_file_sax_08_Single + num_file_sax_10_Single +\
-                         num_file_lax_04_Multi + num_file_lax_08_Multi + num_file_lax_10_Multi + num_file_sax_04_Multi + num_file_sax_08_Multi + num_file_sax_10_Multi
+
+
         scores = {
-            "Num_Files": num_files,
-            "num_file_Lax_04_Single": str(num_file_lax_04_Single)+ "/" + str(num_files),
-            "num_file_Lax_08_Single": str(num_file_lax_08_Single)+ "/" + str(num_files),
-            "num_file_Lax_10_Single": str(num_file_lax_10_Single)+ "/" + str(num_files),
-            "num_file_Sax_04_Single": str(num_file_sax_04_Single)+ "/" + str(num_files),
-            "num_file_Sax_08_Single": str(num_file_sax_08_Single)+ "/" + str(num_files),
-            "num_file_Sax_10_Single": str(num_file_sax_10_Single)+ "/" + str(num_files),
-            "num_file_Lax_04_Multi": str(num_file_lax_04_Multi)+ "/" + str(num_files),
-            "num_file_Lax_08_Multi": str(num_file_lax_08_Multi)+ "/" + str(num_files),
-            "num_file_Lax_10_Multi": str(num_file_lax_10_Multi)+ "/" + str(num_files),
-            "num_file_Sax_04_Multi": str(num_file_sax_04_Multi)+ "/" + str(num_files),
-            "num_file_Sax_08_Multi": str(num_file_sax_08_Multi)+ "/" + str(num_files),
-            "num_file_Sax_10_Multi": str(num_file_sax_10_Multi)+ "/" + str(num_files),
+            "num_file_Lax_04_Single": str(num_task_lax_04_Single)+ "/" + str(num_gt_lax_04_Single),
+            "num_file_Lax_08_Single": str(num_task_lax_08_Single)+ "/" + str(num_gt_lax_08_Single),
+            "num_file_Lax_10_Single": str(num_task_lax_10_Single)+ "/" + str(num_gt_lax_10_Single),
+            "num_file_Sax_04_Single": str(num_task_sax_04_Single)+ "/" + str(num_gt_sax_04_Single),
+            "num_file_Sax_08_Single": str(num_task_sax_08_Single)+ "/" + str(num_gt_sax_08_Single),
+            "num_file_Sax_10_Single": str(num_task_sax_10_Single)+ "/" + str(num_gt_sax_10_Single),
+            "num_file_Lax_04_Multi": str(num_task_lax_04_Multi)+ "/" + str(num_gt_lax_04_Multi),
+            "num_file_Lax_08_Multi": str(num_task_lax_08_Multi)+ "/" + str(num_gt_lax_08_Multi),
+            "num_file_Lax_10_Multi": str(num_task_lax_10_Multi)+ "/" + str(num_gt_lax_10_Multi),
+            "num_file_Sax_04_Multi": str(num_task_sax_04_Multi)+ "/" + str(num_gt_sax_04_Multi),
+            "num_file_Sax_08_Multi": str(num_task_sax_08_Multi)+ "/" + str(num_gt_sax_08_Multi),
+            "num_file_Sax_10_Multi": str(num_task_sax_10_Multi)+ "/" + str(num_gt_sax_10_Multi),
             "Single_Lax_04_PSNR": np.mean(psnr_results_lax_04_Single),
             "Single_Lax_08_PSNR": np.mean(psnr_results_lax_08_Single),
             "Single_Lax_10_PSNR": np.mean(psnr_results_lax_10_Single),
@@ -967,22 +992,20 @@ def main():
         nmse_08 = get_mean_value(nmse_T1_08, nmse_T2_08)
         nmse_10 = get_mean_value(nmse_T1_10, nmse_T2_10)
         nmse_mean = np.mean([nmse_04, nmse_08, nmse_10])
-        num_files = num_file_T1_04_Single+num_file_T1_08_Single+num_file_T1_10_Single+num_file_T2_04_Single+num_file_T2_08_Single+num_file_T2_10_Single+\
-                    num_file_T1_04_Multi + num_file_T1_08_Multi + num_file_T1_10_Multi + num_file_T2_04_Multi + num_file_T2_08_Multi + num_file_T2_10_Multi
+
         scores = {
-            "Num_Files": num_files,
-            "num_file_T1_04_Single": str(num_file_T1_04_Single)+ "/" + str(num_files),
-            "num_file_T1_08_Single": str(num_file_T1_08_Single)+ "/" + str(num_files),
-            "num_file_T1_10_Single": str(num_file_T1_10_Single)+ "/" + str(num_files),
-            "num_file_T2_04_Single": str(num_file_T2_04_Single)+ "/" + str(num_files),
-            "num_file_T2_08_Single": str(num_file_T2_08_Single)+ "/" + str(num_files),
-            "num_file_T2_10_Single": str(num_file_T2_10_Single)+ "/" + str(num_files),
-            "num_file_T1_04_Multi": str(num_file_T1_04_Multi)+ "/" + str(num_files),
-            "num_file_T1_08_Multi": str(num_file_T1_08_Multi)+ "/" + str(num_files),
-            "num_file_T1_10_Multi": str(num_file_T1_10_Multi)+ "/" + str(num_files),
-            "num_file_T2_04_Multi": str(num_file_T2_04_Multi)+ "/" + str(num_files),
-            "num_file_T2_08_Multi": str(num_file_T2_08_Multi)+ "/" + str(num_files),
-            "num_file_T2_10_Multi": str(num_file_T2_10_Multi)+ "/" + str(num_files),
+            "num_file_T1_04_Single": str(num_task_T1_04_Single)+ "/" + str(num_gt_T1_04_Single),
+            "num_file_T1_08_Single": str(num_task_T1_08_Single)+ "/" + str(num_gt_T1_08_Single),
+            "num_file_T1_10_Single": str(num_task_T1_10_Single)+ "/" + str(num_gt_T1_10_Single),
+            "num_file_T2_04_Single": str(num_task_T2_04_Single)+ "/" + str(num_gt_T2_04_Single),
+            "num_file_T2_08_Single": str(num_task_T2_08_Single)+ "/" + str(num_gt_T2_08_Single),
+            "num_file_T2_10_Single": str(num_task_T2_10_Single)+ "/" + str(num_gt_T2_10_Single),
+            "num_file_T1_04_Multi": str(num_task_T1_04_Multi)+ "/" + str(num_gt_T1_04_Multi),
+            "num_file_T1_08_Multi": str(num_task_T1_04_Multi)+ "/" + str(num_gt_T1_04_Multi),
+            "num_file_T1_10_Multi": str(num_task_T1_04_Multi)+ "/" + str(num_gt_T1_04_Multi),
+            "num_file_T2_04_Multi": str(num_task_T2_04_Multi)+ "/" + str(num_gt_T2_04_Multi),
+            "num_file_T2_08_Multi": str(num_task_T2_08_Multi)+ "/" + str(num_gt_T2_08_Multi),
+            "num_file_T2_10_Multi": str(num_task_T2_10_Multi)+ "/" + str(num_gt_T2_10_Multi),
             "Single_T1_04_PSNR": np.mean(psnr_results_T1_04_Single),
             "Single_T1_08_PSNR": np.mean(psnr_results_T1_08_Single),
             "Single_T1_10_PSNR": np.mean(psnr_results_T1_10_Single),
@@ -1043,3 +1066,4 @@ if __name__ == "__main__":
     # 计算代码执行时间
     execution_time = end_time - start_time
     print("代码执行时间：", execution_time, "秒")
+

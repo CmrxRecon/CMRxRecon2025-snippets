@@ -19,8 +19,8 @@ def loadmat(filename):
     # dataset = mat_file['img4ranking']
     mat_file = h5py.File(filename, 'r')
     # 获取数据集
-    # dataset = mat_file[list(mat_file.keys())[0]][()]
-    dataset = mat_file['img4ranking'][()]
+    dataset = mat_file[list(mat_file.keys())[0]][()]
+    # dataset = mat_file['img4ranking'][()]
     # 关闭文件
     mat_file.close()
     return dataset
@@ -76,3 +76,4 @@ def loadmat_group(group):
         elif isinstance(v, h5py.Group):
             data[k] = loadmat_group(v)
     return data
+
