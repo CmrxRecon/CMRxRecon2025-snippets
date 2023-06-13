@@ -10,12 +10,19 @@ Load .mat data using python
 import scipy.io as scio
 import numpy as np
 from coil_combine import rss_complex
+import h5py
 
 def loadmat(filename):
     # 读取.mat 文件
-    mat_file = scio.loadmat(filename)
+    # mat_file = scio.loadmat(filename)
     # 获取数据集
-    dataset = mat_file['img4ranking']
+    # dataset = mat_file['img4ranking']
+    mat_file = h5py.File(filename, 'r')
+    # 获取数据集
+    # dataset = mat_file[list(mat_file.keys())[0]][()]
+    dataset = mat_file['img4ranking'][()]
+    # 关闭文件
+    mat_file.close()
     return dataset
 
 
