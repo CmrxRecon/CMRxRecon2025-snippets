@@ -1006,6 +1006,10 @@ def main():
                         num_task_T2_04_Single + num_task_T2_08_Single + num_task_T2_10_Single + \
                         num_task_T1_04_Multi + num_task_T1_04_Multi + num_task_T1_04_Multi + \
                         num_task_T2_04_Multi + num_task_T2_08_Multi + num_task_T2_10_Multi
+        sum_denominator = num_gt_T1_04_Single + num_gt_T1_08_Single + num_gt_T1_10_Single + \
+                          num_gt_T2_04_Single + num_gt_T2_08_Single + num_gt_T2_10_Single + \
+                          num_gt_T1_04_Multi + num_gt_T1_08_Multi + num_gt_T1_10_Multi + \
+                          num_gt_T2_04_Multi + num_gt_T2_08_Multi + num_gt_T2_10_Multi
         scores = {
             "num_file_T1_04_Single": str(num_task_T1_04_Single)+ "/" + str(num_gt_T1_04_Single),
             "num_file_T1_08_Single": str(num_task_T1_08_Single)+ "/" + str(num_gt_T1_08_Single),
@@ -1014,12 +1018,12 @@ def main():
             "num_file_T2_08_Single": str(num_task_T2_08_Single)+ "/" + str(num_gt_T2_08_Single),
             "num_file_T2_10_Single": str(num_task_T2_10_Single)+ "/" + str(num_gt_T2_10_Single),
             "num_file_T1_04_Multi": str(num_task_T1_04_Multi)+ "/" + str(num_gt_T1_04_Multi),
-            "num_file_T1_08_Multi": str(num_task_T1_04_Multi)+ "/" + str(num_gt_T1_04_Multi),
-            "num_file_T1_10_Multi": str(num_task_T1_04_Multi)+ "/" + str(num_gt_T1_04_Multi),
+            "num_file_T1_08_Multi": str(num_task_T1_08_Multi)+ "/" + str(num_gt_T1_08_Multi),
+            "num_file_T1_10_Multi": str(num_task_T1_10_Multi)+ "/" + str(num_gt_T1_10_Multi),
             "num_file_T2_04_Multi": str(num_task_T2_04_Multi)+ "/" + str(num_gt_T2_04_Multi),
             "num_file_T2_08_Multi": str(num_task_T2_08_Multi)+ "/" + str(num_gt_T2_08_Multi),
             "num_file_T2_10_Multi": str(num_task_T2_10_Multi)+ "/" + str(num_gt_T2_10_Multi),
-            "Num_Files": f'{sum_numerator}/708',
+            "Num_Files": f'{sum_numerator}/{sum_denominator}',
             "Single_T1_04_PSNR": np.round(np.mean(psnr_results_T1_04_Single), 4),
             "Single_T1_08_PSNR": np.round(np.mean(psnr_results_T1_08_Single), 4),
             "Single_T1_10_PSNR": np.round(np.mean(psnr_results_T1_10_Single), 4),
