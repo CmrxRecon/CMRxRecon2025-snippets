@@ -56,7 +56,7 @@ def get_mean_value(value1, value2):
     elif np.isnan(value2):
         return value1
     else:
-        return value1 if value1 > value2 else value2
+        return (value1 + value2) / 2
 
 def get_mean_max_value(value1, value2):
     mean_value1 = np.nanmean(value1)
