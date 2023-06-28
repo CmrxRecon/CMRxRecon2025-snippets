@@ -131,17 +131,25 @@ steps:
         source: "#check_status/finished"
     out:
       - id: results
-      - id: log_zip
+      - id: log_file
 
   upload_log_file:
     run: steps/upload_log_file.cwl
     in: 
+      - id: synapse_config
+        source: "#synapseConfig"
       - id: log_file
-        source: #score/log_zip
+        source: "#score/log_file"
+      - id: upload_folder_id
+        valueFrom: "syn51559506"
+      - id: file_name
+        source: "#submissionId"
     out: []
       
   email_score:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
+    # TODO swich to the email score
+    #run: steps/email_score.cwl
     in:
       - id: submissionid
         source: "#submissionId"

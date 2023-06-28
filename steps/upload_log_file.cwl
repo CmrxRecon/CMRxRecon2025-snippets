@@ -8,41 +8,40 @@ requirements:
   - class: InlineJavascriptRequirement
 
 inputs:
-  - id: input_file
+  - id: synapse_config
+    label: filepath to .synapseConfig file
     type: File
-#  - id: goldstandard
-#    type: File
-  - id: check_validation_finished
-    type: boolean?
-
-outputs:
-  - id: results
-    type: File
-    outputBinding:
-      glob: results.json
   - id: log_file
+    label: filepath to the log file, which will be upload
     type: File
-    outputBinding:
-      glob: better_log.zip
-  - id: status
+  - id: upload_folder_id
+    label: the Synapse folder id to upload the log file
     type: string
-    outputBinding:
-      glob: results.json
-      outputEval: $(JSON.parse(self[0].contents)['submission_status'])
-      loadContents: true
+  - id: file_name
+    label: the name display on the synapse website
+    type: string
 
-baseCommand: ["python3", "/app/Main_Score.py"]
+#outputs:
+#  - id: item_id
+#    label: 
+#    type: string
+#    outputBinding:
+#      glob: results.json
+#      outputEval: $(JSON.parse(self[0].contents)['item_id'])
+#      loadContents: true
+
+# synapse -c ./synapse_config store --parentid syn51559506 better_log.zip  --name 1.zip
+baseCommand: ["synapse"]
 arguments:
-  - prefix: -f
-    valueFrom: $(inputs.input_file.path)
-  - prefix: -g
-    valueFrom: /GT
-  - prefix: -t
-    valueFrom: Cine
-    # 此处根据task1还是task2来指定
-  - prefix: -r
-    valueFrom: results.json
+  - prefix: -c
+    valueFrom: $(inputs.synapseConfig.path)
+  - valueFrom: store
+  - prefix: --parentid
+    valueFrom: ${inputs.upload_folder_id}
+  - valueFrom: ${inputs.log_file.path}
+  - prefix: --name
+    valueFrom: ${inputs.file_name}
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn51471092/validate:latest
+    dockerPull: sagebionetworks/synapsepythonclient:v2.3.0
