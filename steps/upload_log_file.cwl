@@ -34,7 +34,7 @@ outputs: []
 baseCommand: ["synapse"]
 arguments:
   - prefix: -c
-    valueFrom: $(inputs.synapseConfig.path)
+    valueFrom: $(inputs.synapse_config.path)
   - valueFrom: store
   - prefix: --parentid
     valueFrom: ${inputs.upload_folder_id}
