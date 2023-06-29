@@ -37,10 +37,10 @@ arguments:
     valueFrom: $(inputs.synapse_config.path)
   - valueFrom: store
   - prefix: --parentid
-    valueFrom: ${inputs.upload_folder_id}
-  - valueFrom: ${inputs.log_file.path}
+    valueFrom: $(inputs.upload_folder_id)
+  - valueFrom: $(inputs.log_file.path)
   - prefix: --name
-    valueFrom: ${inputs.file_name}.zip
+    valueFrom: $(inputs.file_name).zip
 
 hints:
   DockerRequirement:
