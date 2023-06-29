@@ -1076,7 +1076,7 @@ def main():
             **scores
         }
         out.write(json.dumps(results))
-    assert 0 == os.system('zip better_log.zip *.json')
+    assert 0 == os.system('zip better_log.zip *.json README.txt')
     print('All checked!')
 
 if __name__ == "__main__":
