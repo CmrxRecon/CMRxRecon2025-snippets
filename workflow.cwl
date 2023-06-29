@@ -110,6 +110,6 @@ steps:
         source: "#synapseConfig"
       - id: previous_annotation_finished
         #source: "#annotate_validation_with_output/finished"
-        valueFrom: true
+        default: true
     out: [finished]
  
