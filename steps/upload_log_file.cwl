@@ -40,7 +40,7 @@ arguments:
     valueFrom: ${inputs.upload_folder_id}
   - valueFrom: ${inputs.log_file.path}
   - prefix: --name
-    valueFrom: ${inputs.file_name}
+    valueFrom: ${inputs.file_name}.zip
 
 hints:
   DockerRequirement:
