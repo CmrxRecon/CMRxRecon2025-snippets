@@ -19,7 +19,7 @@ inputs:
     type: string
   - id: file_name
     label: the name display on the synapse website
-    type: string
+    type: int
 
 outputs: []
 #  - id: item_id
