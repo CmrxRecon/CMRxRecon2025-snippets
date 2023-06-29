@@ -80,9 +80,9 @@ steps:
     out: []
       
   email_score:
-    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
+    #run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
     # TODO swich to the email score
-    #run: steps/email_score.cwl
+    run: steps/email_score.cwl
     in:
       - id: submissionid
         source: "#submissionId"
