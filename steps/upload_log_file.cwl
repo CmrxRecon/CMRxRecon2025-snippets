@@ -21,7 +21,7 @@ inputs:
     label: the name display on the synapse website
     type: string
 
-#outputs:
+outputs: []
 #  - id: item_id
 #    label: 
 #    type: string
