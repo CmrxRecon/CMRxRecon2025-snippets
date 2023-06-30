@@ -365,7 +365,7 @@ def main():
         filename = "Lax_Single_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
 
         psnr_results_lax_04_Single, ssim_results_lax_04_Single, nmse_results_lax_04_Single = CalValue(
             complete_folders_lax_04_Single, gt_dir04, target_dir04, Sub_Task)
@@ -434,7 +434,7 @@ def main():
         filename = "Lax_Multi_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
 
     
         psnr_results_lax_04_Multi, ssim_results_lax_04_Multi, nmse_results_lax_04_Multi = CalValue(
@@ -517,7 +517,7 @@ def main():
         filename = "Sax_Single_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
 
         psnr_results_sax_04_Single, ssim_results_sax_04_Single, nmse_results_sax_04_Single = CalValue(
             complete_folders_sax_04_Single, gt_dir04, target_dir04, Sub_Task)
@@ -586,7 +586,7 @@ def main():
         filename = "Sax_Multi_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
     
         psnr_results_sax_04_Multi, ssim_results_sax_04_Multi, nmse_results_sax_04_Multi = CalValue(
             complete_folders_sax_04_Multi, gt_dir04, target_dir04, Sub_Task)
@@ -669,7 +669,7 @@ def main():
         filename = "T1_Single_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(data, file)
+            json.dump(data, file, indent=4)
 
         psnr_results_T1_04_Single, ssim_results_T1_04_Single, nmse_results_T1_04_Single = CalValue(
             complete_folders_T1_04_Single, gt_dir04, target_dir04, Sub_Task)
@@ -738,7 +738,7 @@ def main():
         filename = "T1_Multi_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
 
 
         psnr_results_T1_04_Multi, ssim_results_T1_04_Multi, nmse_results_T1_04_Multi = CalValue(
@@ -820,7 +820,7 @@ def main():
         filename = "T2_Single_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
 
 
         psnr_results_T2_04_Single, ssim_results_T2_04_Single, nmse_results_T2_04_Single = CalValue(
@@ -890,7 +890,7 @@ def main():
         filename = "T2_Multi_Flags.json"
 
         with open(filename, mode='w') as file:
-            json.dump(variables, file)
+            json.dump(variables, file, indent=4)
 
         psnr_results_T2_04_Multi, ssim_results_T2_04_Multi, nmse_results_T2_04_Multi = CalValue(
             complete_folders_T2_04_Multi, gt_dir04, target_dir04, Sub_Task)
@@ -1075,8 +1075,8 @@ def main():
             "submission_status": "SCORED",
             **scores
         }
-        out.write(json.dumps(results))
-    assert 0 == os.system('zip better_log.zip *.json README.txt')
+        out.write(json.dumps(results, indent=4))
+    assert 0 == os.system('cp /app/README.txt . && zip better_log.zip *.json README.txt')
     print('All checked!')
 
 if __name__ == "__main__":
