@@ -12,14 +12,18 @@ inputs:
     type: File
 #  - id: goldstandard
 #    type: File
-  - id: check_validation_finished
-    type: boolean?
+#  - id: check_validation_finished
+#    type: boolean?
 
 outputs:
   - id: results
     type: File
     outputBinding:
       glob: results.json
+  - id: log_file
+    type: File
+    outputBinding:
+      glob: better_log.zip
   - id: status
     type: string
     outputBinding:
