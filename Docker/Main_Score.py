@@ -9,6 +9,7 @@ import h5py
 import os
 import numpy as np
 from loadFun import loadmat, kdata2img, multicoilkdata2img
+from logger import Logger
 import sys
 import argparse
 import pandas as pd
@@ -27,6 +28,7 @@ sys.path = [
     os.path.abspath(__file__)[:-9]
 ] + sys.path
 
+logger = Logger.to_file('custom_log.txt')
 
 def get_max_value(psnr1, psnr2):
     if math.isnan(psnr1) and math.isnan(psnr2):
@@ -202,8 +204,10 @@ def check_mat_files(path1, path2, folder_names, Sub_Task):
                 flag = 2
                 continue
 
+            logger.log(f'Same shape, dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
             # 检查数据集的大小
             if len(dataset1) != len(dataset2):
+                logger.log(f'Different shape, dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
                 different_sizes.append((mat_file_path2))
                 complete_folders.remove(folder_name)
                 flag = 3
@@ -1076,7 +1080,10 @@ def main():
             **scores
         }
         out.write(json.dumps(results, indent=4))
-    assert 0 == os.system('cp /app/README.txt . && zip better_log.zip *.json README.txt')
+    logger.log('All message wrote!')
+    logger.close()
+    if os.path.exists('/app'):
+        assert 0 == os.system('cp /app/README.txt . && zip better_log.zip *.json README.txt custom_log.txt')
     print('All checked!')
 
 if __name__ == "__main__":
