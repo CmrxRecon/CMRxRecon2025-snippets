@@ -204,7 +204,7 @@ def check_mat_files(path1, path2, folder_names, Sub_Task):
                 flag = 2
                 continue
 
-            logger.log(f'Same shape, dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
+            logger.log(f'Shape of dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
             # 检查数据集的大小
             if len(dataset1) != len(dataset2):
                 logger.log(f'Different shape, dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
