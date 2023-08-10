@@ -91,7 +91,7 @@ requirements:
               else:
                   message = ["Hello %s,\n\n" % name,
                              "Your submission (id: %s) is scored, below are your results:\n\n" % sub.id,
-                             "The detail log for each data can be found in: https://www.synapse.org/#!Synapse:syn51756002, named by %s.zip\n\n" % sub.id,
+                             "The detail log for each data can be found in: https://www.synapse.org/#!Synapse:syn52267170, named by %s.zip\n\n" % sub.id,
                              "\n".join([i + " : " + str(annots[i]) for i in annots]),
                              "\n\nSincerely,\nChallenge Administrator"]
               syn.sendMessage(

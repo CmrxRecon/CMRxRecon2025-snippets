@@ -74,7 +74,7 @@ steps:
       - id: log_file
         source: "#score/log_file"
       - id: upload_folder_id
-        valueFrom: "syn51756002"
+        valueFrom: "syn52267170"
       - id: file_name
         source: "#submissionId"
     out: []
