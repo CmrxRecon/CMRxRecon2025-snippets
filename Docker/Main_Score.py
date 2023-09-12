@@ -204,7 +204,7 @@ def check_mat_files(path1, path2, folder_names, Sub_Task):
                 flag = 2
                 continue
 
-            logger.log(f'Dataset shape, dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
+            logger.log(f'{mat_file_path2}, Dataset shape, dataset1: {dataset1.shape}, dataset2: {dataset2.shape}')
             # 检查数据集的大小
             if len(dataset1) != len(dataset2):
                 different_sizes.append((mat_file_path2))
@@ -271,7 +271,7 @@ def main():
     """Main function."""
     args = get_args()
 
-    DataType = 'ValidationSet'
+    DataType = 'TestSet'
      
     # >>> Added by Daryl.Xu, prepare the submission file
     submission_file = args.submissionfile
@@ -939,18 +939,18 @@ def main():
 
         scores = {
             "Num_Files": f'{sum_numerator}/{666}',
-            "num_file_Lax_04_Single": str(num_task_lax_04_Single)+ "/51", # + str(num_gt_lax_04_Single),
-            "num_file_Lax_08_Single": str(num_task_lax_08_Single)+ "/51",# + str(num_gt_lax_08_Single),
-            "num_file_Lax_10_Single": str(num_task_lax_10_Single)+ "/51",# + str(num_gt_lax_10_Single),
-            "num_file_Sax_04_Single": str(num_task_sax_04_Single)+ "/60",# + str(num_gt_sax_04_Single),
-            "num_file_Sax_08_Single": str(num_task_sax_08_Single)+ "/60",# + str(num_gt_sax_08_Single),
-            "num_file_Sax_10_Single": str(num_task_sax_10_Single)+ "/60",# + str(num_gt_sax_10_Single),
-            "num_file_Lax_04_Multi": str(num_task_lax_04_Multi)+ "/51",# + str(num_gt_lax_04_Multi),
-            "num_file_Lax_08_Multi": str(num_task_lax_08_Multi)+ "/51",# + str(num_gt_lax_08_Multi),
-            "num_file_Lax_10_Multi": str(num_task_lax_10_Multi)+ "/51",# + str(num_gt_lax_10_Multi),
-            "num_file_Sax_04_Multi": str(num_task_sax_04_Multi)+ "/60",# + str(num_gt_sax_04_Multi),
-            "num_file_Sax_08_Multi": str(num_task_sax_08_Multi)+ "/60",# + str(num_gt_sax_08_Multi),
-            "num_file_Sax_10_Multi": str(num_task_sax_10_Multi)+ "/60",# + str(num_gt_sax_10_Multi),
+            "num_file_Lax_04_Single": str(num_task_lax_04_Single)+ "/71", # + str(num_gt_lax_04_Single),
+            "num_file_Lax_08_Single": str(num_task_lax_08_Single)+ "/71",# + str(num_gt_lax_08_Single),
+            "num_file_Lax_10_Single": str(num_task_lax_10_Single)+ "/71",# + str(num_gt_lax_10_Single),
+            "num_file_Sax_04_Single": str(num_task_sax_04_Single)+ "/87",# + str(num_gt_sax_04_Single),
+            "num_file_Sax_08_Single": str(num_task_sax_08_Single)+ "/87",# + str(num_gt_sax_08_Single),
+            "num_file_Sax_10_Single": str(num_task_sax_10_Single)+ "/87",# + str(num_gt_sax_10_Single),
+            "num_file_Lax_04_Multi": str(num_task_lax_04_Multi)+ "/71",# + str(num_gt_lax_04_Multi),
+            "num_file_Lax_08_Multi": str(num_task_lax_08_Multi)+ "/71",# + str(num_gt_lax_08_Multi),
+            "num_file_Lax_10_Multi": str(num_task_lax_10_Multi)+ "/71",# + str(num_gt_lax_10_Multi),
+            "num_file_Sax_04_Multi": str(num_task_sax_04_Multi)+ "/87",# + str(num_gt_sax_04_Multi),
+            "num_file_Sax_08_Multi": str(num_task_sax_08_Multi)+ "/87",# + str(num_gt_sax_08_Multi),
+            "num_file_Sax_10_Multi": str(num_task_sax_10_Multi)+ "/87",# + str(num_gt_sax_10_Multi),
             "Single_Lax_04_PSNR": np.round(np.mean(psnr_results_lax_04_Single), 4),
             "Single_Lax_08_PSNR": np.round(np.mean(psnr_results_lax_08_Single), 4),
             "Single_Lax_10_PSNR": np.round(np.mean(psnr_results_lax_10_Single), 4),
@@ -1017,18 +1017,18 @@ def main():
 
         scores = {
             "Num_Files": f'{sum_numerator}/{708}',
-            "num_file_T1_04_Single": str(num_task_T1_04_Single)+ "/59", # + str(num_gt_T1_04_Single),
-            "num_file_T1_08_Single": str(num_task_T1_08_Single)+ "/59", # + str(num_gt_T1_08_Single),
-            "num_file_T1_10_Single": str(num_task_T1_10_Single)+ "/59", # + str(num_gt_T1_10_Single),
-            "num_file_T2_04_Single": str(num_task_T2_04_Single)+ "/59", # + str(num_gt_T2_04_Single),
-            "num_file_T2_08_Single": str(num_task_T2_08_Single)+ "/59", # + str(num_gt_T2_08_Single),
-            "num_file_T2_10_Single": str(num_task_T2_10_Single)+ "/59", # + str(num_gt_T2_10_Single),
-            "num_file_T1_04_Multi": str(num_task_T1_04_Multi)+ "/59", # + str(num_gt_T1_04_Multi),
-            "num_file_T1_08_Multi": str(num_task_T1_08_Multi)+ "/59", # + str(num_gt_T1_04_Multi),
-            "num_file_T1_10_Multi": str(num_task_T1_10_Multi)+ "/59", # + str(num_gt_T1_04_Multi),
-            "num_file_T2_04_Multi": str(num_task_T2_04_Multi)+ "/59", # + str(num_gt_T2_04_Multi),
-            "num_file_T2_08_Multi": str(num_task_T2_08_Multi)+ "/59", # + str(num_gt_T2_08_Multi),
-            "num_file_T2_10_Multi": str(num_task_T2_10_Multi)+ "/59", # + str(num_gt_T2_10_Multi),
+            "num_file_T1_04_Single": str(num_task_T1_04_Single)+ "/89", # + str(num_gt_T1_04_Single),
+            "num_file_T1_08_Single": str(num_task_T1_08_Single)+ "/89", # + str(num_gt_T1_08_Single),
+            "num_file_T1_10_Single": str(num_task_T1_10_Single)+ "/89", # + str(num_gt_T1_10_Single),
+            "num_file_T2_04_Single": str(num_task_T2_04_Single)+ "/88", # + str(num_gt_T2_04_Single),
+            "num_file_T2_08_Single": str(num_task_T2_08_Single)+ "/88", # + str(num_gt_T2_08_Single),
+            "num_file_T2_10_Single": str(num_task_T2_10_Single)+ "/88", # + str(num_gt_T2_10_Single),
+            "num_file_T1_04_Multi": str(num_task_T1_04_Multi)+ "/89", # + str(num_gt_T1_04_Multi),
+            "num_file_T1_08_Multi": str(num_task_T1_08_Multi)+ "/89", # + str(num_gt_T1_04_Multi),
+            "num_file_T1_10_Multi": str(num_task_T1_10_Multi)+ "/89", # + str(num_gt_T1_04_Multi),
+            "num_file_T2_04_Multi": str(num_task_T2_04_Multi)+ "/88", # + str(num_gt_T2_04_Multi),
+            "num_file_T2_08_Multi": str(num_task_T2_08_Multi)+ "/88", # + str(num_gt_T2_08_Multi),
+            "num_file_T2_10_Multi": str(num_task_T2_10_Multi)+ "/88", # + str(num_gt_T2_10_Multi),
             "Single_T1_04_PSNR": np.round(np.mean(psnr_results_T1_04_Single), 4),
             "Single_T1_08_PSNR": np.round(np.mean(psnr_results_T1_08_Single), 4),
             "Single_T1_10_PSNR": np.round(np.mean(psnr_results_T1_10_Single), 4),
