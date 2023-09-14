@@ -12,6 +12,7 @@ import numpy as np
 from coil_combine import rss_complex
 import h5py
 
+
 def loadmat(filename):
     # 读取.mat 文件
     # mat_file = scio.loadmat(filename)
@@ -21,14 +22,18 @@ def loadmat(filename):
         # 尝试使用scipy.io.loadmat打开MAT文件
         mat_file = scio.loadmat(filename)
         # 访问MAT文件中的数据
-        dataset = mat_file['img4ranking']
+        #dataset = mat_file['img4ranking']
+        for _, v in mat_file.items():
+            dataset = v
         print("MAT file opened successfully using scipy.io.loadmat.")
     except NotImplementedError:
         try:
             # 尝试使用h5py打开MAT文件
             with h5py.File(filename, 'r') as f:
                 # 访问MAT文件中的数据
-                dataset = f['img4ranking'][:]
+                for _, v in f.items():
+                    dataset = v[:]
+                #dataset = f['img4ranking'][:]
             print("MAT file opened successfully using h5py.")
         except Exception as e:
             print("Failed to open MAT file:", str(e))
