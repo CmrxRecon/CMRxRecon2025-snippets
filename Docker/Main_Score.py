@@ -938,7 +938,7 @@ def main():
                           num_gt_sax_04_Multi + num_gt_sax_08_Multi + num_gt_sax_10_Multi
 
         scores = {
-            "Num_Files": f'{sum_numerator}/{666}',
+            "Num_Files": f'{sum_numerator}/{948}',
             "num_file_Lax_04_Single": str(num_task_lax_04_Single)+ "/71", # + str(num_gt_lax_04_Single),
             "num_file_Lax_08_Single": str(num_task_lax_08_Single)+ "/71",# + str(num_gt_lax_08_Single),
             "num_file_Lax_10_Single": str(num_task_lax_10_Single)+ "/71",# + str(num_gt_lax_10_Single),
@@ -1016,7 +1016,7 @@ def main():
 
 
         scores = {
-            "Num_Files": f'{sum_numerator}/{708}',
+            "Num_Files": f'{sum_numerator}/{1290}',
             "num_file_T1_04_Single": str(num_task_T1_04_Single)+ "/108", # + str(num_gt_T1_04_Single),
             "num_file_T1_08_Single": str(num_task_T1_08_Single)+ "/108", # + str(num_gt_T1_08_Single),
             "num_file_T1_10_Single": str(num_task_T1_10_Single)+ "/108", # + str(num_gt_T1_10_Single),
