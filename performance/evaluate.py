@@ -1,8 +1,10 @@
 import argparse
 import json
 import docker
-import nvidia_smi
+import pynvml
 from datetime import datetime
+import threading
+import time
 
 
 def get_cpu_load():
@@ -29,31 +31,30 @@ def get_cpu_load():
     return cpu_usage, memory_usage
 
 def get_gpu_load():
-    # 初始化 NVIDIA 管理库
-    nvidia_smi.nvmlInit()
+    # 初始化 NVML
+    pynvml.nvmlInit()
 
-    # # 获取 NVIDIA GPU 数量
-    # device_count = nvidia_smi.nvmlDeviceGetCount()
+    # 获取设备句柄
+    handle = pynvml.nvmlDeviceGetHandleByIndex(0)
 
-    # # 遍历每个 GPU
-    # for i in range(device_count):
-    # 根据索引获取 GPU
-    handle = nvidia_smi.nvmlDeviceGetHandleByIndex(0)
+    # 获取显卡名称
+    name = pynvml.nvmlDeviceGetName(handle)
 
-    # 获取 GPU 的使用率
-    utilization = nvidia_smi.nvmlDeviceGetUtilizationRates(handle)
-    gpu_utilization = utilization.gpu
+    # 获取显存使用情况
+    mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+    print(f"Memory Usage - Total: {mem_info.total / 1024 / 1024} MB, Used: {mem_info.used / 1024 / 1024} MB")
+    memory_used = mem_info.used / 1024 / 1024
 
-    # 获取 GPU 的显存占用
-    memory_info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
-    memory_used = memory_info.used
+    # 获取 GPU 使用率
+    gpu_utilization = pynvml.nvmlDeviceGetUtilizationRates(handle)
+
+    # 清理 NVML
+    pynvml.nvmlShutdown()
 
     # 打印 GPU 的使用率和显存占用
     print(f"GPU Utilization: {gpu_utilization}%")
     print(f"GPU Memory Used: {memory_used} bytes")
 
-    # 关闭 NVIDIA 管理库
-    nvidia_smi.nvmlShutdown()
     return gpu_utilization, memory_used
 
 def monitor(log_path: str, pid_path: str):
@@ -62,9 +63,11 @@ def monitor(log_path: str, pid_path: str):
     f.write('version: 1.0')
 
     while os.path.exists(pid_path):
-        cpu_r, ram_r = get_cpu_load()
+        # cpu_r, ram_r = get_cpu_load()
+        cpu_r, ram_r = 0, 0
         gpu_r, gpu_ram = get_gpu_load()
-        f.write(f'{datetime.now()}, {cpu_r}, {ram_r}, {gpu_r}, {gpu_ram}')
+        f.write(f'{datetime.now()}, {cpu_r}, {ram_r}, {gpu_r}, {gpu_ram}\n')
+        time.sleep(1)
     # timestamp, GPU_LOAD, GPU_memory, CPU_LOAD, Memory
     f.close()
 
@@ -88,13 +91,15 @@ if __name__ == '__main__':
     # start docker
     docker_cmd = info['docker_cmd']
     print('This is the command to be executed: ', docker_cmd)
-    # os.system(docker_cmd)
 
     # 在pid文件中写入容器id
     os.system(f'touch {pid_path}')
 
     # 在后台执行
-    monitor(log_path, pid_path)
-
+    thread = threading.Thread(target=monitor, args=(log_path, pid_path))
+    thread.start()
+    os.system(docker_cmd)
     # stop monitor
     os.remove(pid_path)
+    thread.join()
+
