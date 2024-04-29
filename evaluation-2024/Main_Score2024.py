@@ -10,20 +10,14 @@ This works for the validation dataset.
 
 import numpy as np
 import os
-import h5py
-import os
-from loadFun import loadmat, kdata2img, multicoilkdata2img
-import sys
-import argparse
+from loadFun import loadmat
 import pandas as pd
-import scipy.io as scio
 import time
-from Evaluation import calmetric, save_metric, memo_metric0, save_df
+from Evaluation import calmetric
 import gzip
 import tarfile
 import zipfile
 import rarfile
-import math
 import json
 
 def statis_metrics_and_num_files(ranks: pd.DataFrame,
