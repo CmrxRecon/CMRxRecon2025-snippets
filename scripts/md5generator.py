@@ -18,7 +18,9 @@ def generate_md5(input_folder, output_file):
                     for byte_block in iter(lambda: f2.read(4096), b""):
                         md5_hash.update(byte_block)
                 md5_digest = md5_hash.hexdigest()
-                f.write(f"{relative_path}-{md5_digest}\n")
+                msg = f"{relative_path}-{md5_digest}\n"
+                print(msg)
+                f.write(msg)
 
 
 if __name__ == "__main__":

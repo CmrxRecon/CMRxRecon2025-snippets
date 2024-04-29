@@ -23,11 +23,14 @@ def check_md5(input_folder, md5_file, allow_missing):
             file_path = os.path.relpath(os.path.join(root, file), input_folder)
             if file_path in md5_dict:
                 md5_hash = hashlib.md5()
-                with open(os.path.join(root, file), "rb") as f:
+                full_path = os.path.join(root, file)
+                with open(full_path, "rb") as f:
                     # Read and update hash string value in blocks of 4K
                     for byte_block in iter(lambda: f.read(4096), b""):
                         md5_hash.update(byte_block)
-                if md5_hash.hexdigest() != md5_dict[file_path]:
+                if md5_hash.hexdigest() == md5_dict[file_path]:
+                    print(f'{full_path} check passed')
+                else:
                     print(f"MD5 mismatch: {file_path}")
             else:
                 print(f"File not found in MD5 file: {file_path}")
@@ -35,7 +38,7 @@ def check_md5(input_folder, md5_file, allow_missing):
     if missing_files > allow_missing:
         print(f"Too many missing files: {missing_files}, allowed: {allow_missing}")
     else:
-        print("All files checked successfully.")
+        print(f"Files checked successfully, {missing_files} are missed.")
 
 
 if __name__ == "__main__":
