@@ -19,6 +19,8 @@ import tarfile
 import zipfile
 import rarfile
 import json
+import argparse
+
 
 def statis_metrics_and_num_files(ranks: pd.DataFrame,
                                  modal:str, 
@@ -91,13 +93,12 @@ def unzipfile(fpth, output_dir):
     else:
         raise Exception('Not supported format')
 
-def main(submission_unzipped_path: str,
+def main(gt_dir: str,
+         submission_unzipped_path: str,
          tasknum: int = 1):
     # for validation, we read the random mapping from a csv file
-    #TODO: 修改这个mapping映射的路径 & 存储路径。
     # REPLY: 可以暂时用着这个目录
     dataframe = pd.read_csv('/home/wangfw/CMRxRecon2024Organizer/Code/newID.csv')
-    rootdir = '/home2/Raw_data/MICCAIChallenge2024'
 
     # placeholder for all metrics.
     Metrics = ['PSNR', "SSIM", "NMSE"]
@@ -134,12 +135,13 @@ def main(submission_unzipped_path: str,
             filelist = [modal]
         # get the cases from the subdir
         # REPLY： 这个路径从命令行参数取得
-        gtpath = os.path.join(rootdir, 
-                            'GroundTruth4Ranking', 
-                            'MultiCoil', 
-                            Modal, 
-                            SetType, 
-                            Taskx)
+        # FW:DONE
+        gtpath = os.path.join(gt_dir, 
+                              'GroundTruth4Ranking', 
+                              'MultiCoil', 
+                              Modal, 
+                              SetType, 
+                              Taskx)
         cases = os.listdir(gtpath)
         for Case in cases:
             gtdir = os.path.join(gtpath, Case)
@@ -171,7 +173,7 @@ def main(submission_unzipped_path: str,
                 gtmat = loadmat(os.path.join(gtdir, (file + '.mat')))
                 sorted_masklist = []
                 for under, undermask in zip(Underlist, undermasklist):
-                    underdir = os.path.join(rootdir, 
+                    underdir = os.path.join(gt_dir,
                                             'ChallengeData',
                                             'MultiCoil',
                                             Modal,
@@ -238,10 +240,13 @@ def main(submission_unzipped_path: str,
                     ranks = pd.concat([ranks, new_frame], ignore_index=True)
 
     # save the ranks to the csv file
-    # TODO: 可以换个结果存储路径？
     # REPLY：命令行参数给定了output folder，存放在output目录下即可
-    resultdir = submission_unzipped_path
+    # FW: 如果先前已经区分了task1/task2, 可以删掉这边的Taskx 和下面的results.json格式一致
     filename = 'Result_' + Taskx + '.csv'
+    # makedir for result
+    resultdir = os.path.join(submission_unzipped_path,'results')
+    if not os.path.exists(resultdir):
+        os.makedirs(resultdir)
     ranks.to_csv(os.path.join(resultdir,filename))
 
     # here calculate the json file with statistical output. 
@@ -284,7 +289,7 @@ def main(submission_unzipped_path: str,
     scores[f"All_NMSE"] = mean_nmse_all
     # save the scores as a json
 
-    with open(os.path.join(submission_unzipped_path,"results.json"), "w") as out:
+    with open(os.path.join(resultdir, "results.json"), "w") as out:
         for k, v in scores.items():
             print(type(v), v)
             if type(v) != str and np.isnan(v):
@@ -298,32 +303,30 @@ def main(submission_unzipped_path: str,
 
 
 if __name__ == "__main__":
-    import argparse
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, required=True, help='Path to the submission file or folder')
-    parser.add_argument('-g', '--grundtruth', type=str, required=True, help='Path to the GroundTruth')
+    parser.add_argument('-g', '--groundtruth', type=str, required=True, help='Path to the GroundTruth')
     parser.add_argument('-t', '--task', type=str, required=True, help='Task1 or Task2')
     parser.add_argument('-o', '--output', type=str, required=False, default='./', help='Path of output saving folder')
     args = parser.parse_args()
 
-    rootpath = "/home2/Raw_data/MICCAIChallenge2024"
     # task_num = 2 # 1/2
     if args.task.find('1') != -1:
         task_num = 1
     else:
-        task_num =2
-    sub_zip_filename = "SubmissionTask" + str(task_num) + ".zip"
-    submission_zip_path = os.path.join(rootpath, "ChallengeResult",sub_zip_filename)
+        task_num = 2
+    
+    sub_zip_filename = "Submission.zip"
     submission_zip_path = args.input
-    # TODO: 我修改了原本函数，会生成一个新的文件夹，适应task1/task2, 不过因为最后所有都是submission.zip, 后续需要修改。
     # REPLY：输出目录通过命令行参数传入
-    output_dir = os.path.join(rootpath, "ChallengeResult", ("SubmissionTask" + str(task_num)))
+    # FW: Done.
     output_dir = args.output
+    gt_dir = args.groundtruth
+    print(gt_dir)
 
     start_time = time.time()
     unzipfile(submission_zip_path, output_dir)
-    main(submission_unzipped_path = output_dir, tasknum = task_num)
+    main(gt_dir = gt_dir, submission_unzipped_path = output_dir, tasknum = task_num)
     end_time = time.time()
     # 计算代码执行时间
     execution_time = end_time - start_time
