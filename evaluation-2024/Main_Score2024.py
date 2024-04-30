@@ -95,6 +95,7 @@ def main(submission_unzipped_path: str,
          tasknum: int = 1):
     # for validation, we read the random mapping from a csv file
     #TODO: 修改这个mapping映射的路径 & 存储路径。
+    # REPLY: 可以暂时用着这个目录
     dataframe = pd.read_csv('/home/wangfw/CMRxRecon2024Organizer/Code/newID.csv')
     rootdir = '/home2/Raw_data/MICCAIChallenge2024'
 
@@ -132,6 +133,7 @@ def main(submission_unzipped_path: str,
         else:
             filelist = [modal]
         # get the cases from the subdir
+        # REPLY： 这个路径从命令行参数取得
         gtpath = os.path.join(rootdir, 
                             'GroundTruth4Ranking', 
                             'MultiCoil', 
@@ -237,6 +239,7 @@ def main(submission_unzipped_path: str,
 
     # save the ranks to the csv file
     # TODO: 可以换个结果存储路径？
+    # REPLY：命令行参数给定了output folder，存放在output目录下即可
     resultdir = submission_unzipped_path
     filename = 'Result_' + Taskx + '.csv'
     ranks.to_csv(os.path.join(resultdir,filename))
@@ -295,12 +298,28 @@ def main(submission_unzipped_path: str,
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input', type=str, required=True, help='Path to the submission file or folder')
+    parser.add_argument('-g', '--grundtruth', type=str, required=True, help='Path to the GroundTruth')
+    parser.add_argument('-t', '--task', type=str, required=True, help='Task1 or Task2')
+    parser.add_argument('-o', '--output', type=str, required=False, default='./', help='Path of output saving folder')
+    args = parser.parse_args()
+
     rootpath = "/home2/Raw_data/MICCAIChallenge2024"
-    task_num = 2 # 1/2
+    # task_num = 2 # 1/2
+    if args.task.find('1') != -1:
+        task_num = 1
+    else:
+        task_num =2
     sub_zip_filename = "SubmissionTask" + str(task_num) + ".zip"
     submission_zip_path = os.path.join(rootpath, "ChallengeResult",sub_zip_filename)
+    submission_zip_path = args.input
     # TODO: 我修改了原本函数，会生成一个新的文件夹，适应task1/task2, 不过因为最后所有都是submission.zip, 后续需要修改。
+    # REPLY：输出目录通过命令行参数传入
     output_dir = os.path.join(rootpath, "ChallengeResult", ("SubmissionTask" + str(task_num)))
+    output_dir = args.output
 
     start_time = time.time()
     unzipfile(submission_zip_path, output_dir)
