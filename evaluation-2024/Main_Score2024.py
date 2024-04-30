@@ -242,12 +242,10 @@ def main(gt_dir: str,
     # save the ranks to the csv file
     # REPLY：命令行参数给定了output folder，存放在output目录下即可
     # FW: 如果先前已经区分了task1/task2, 可以删掉这边的Taskx 和下面的results.json格式一致
-    filename = 'Result_' + Taskx + '.csv'
-    # makedir for result
-    resultdir = os.path.join(submission_unzipped_path,'results')
+    resultdir = os.path.join(submission_unzipped_path,'Result')
     if not os.path.exists(resultdir):
         os.makedirs(resultdir)
-    ranks.to_csv(os.path.join(resultdir,filename))
+    ranks.to_csv(os.path.join(resultdir, 'result.csv'))
 
     # here calculate the json file with statistical output. 
     # read the csv and save them to a json files with:
