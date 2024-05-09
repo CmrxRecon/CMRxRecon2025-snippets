@@ -4,3 +4,4 @@ rarfile==4.2
 h5py==3.11.0
 scikit-image
 scipy==1.13.0
+synapseclient
