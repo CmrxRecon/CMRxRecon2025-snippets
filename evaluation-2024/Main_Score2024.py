@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# python 3.10.14
 # -*- coding: utf-8 -*-
 """
 Created on April 24 2024
