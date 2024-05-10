@@ -6,6 +6,15 @@ import pynvml
 from datetime import datetime
 import threading
 import time
+import psutil
+
+
+def get_host_load(interval: int=1):
+    cpu_usage = psutil.cpu_percent(interval)
+    mem = psutil.virtual_memory()
+    memory_usage = mem.used
+    
+    return cpu_usage, memory_usage / 1024 / 1024
 
 
 def get_container_load(container: Container):
@@ -38,8 +47,8 @@ def get_gpu_load(handle):
     # print(f'GPU mem: {mem_info}, utilization: {gpu_utilization}')
 
     # 打印 GPU 的使用率和显存占用
-    print(f"GPU Utilization: {gpu_utilization.gpu}%")
-    print(f"GPU Memory Used: {memory_used} MB")
+    # print(f"GPU Utilization: {gpu_utilization.gpu}%")
+    # print(f"GPU Memory Used: {memory_used} MB")
 
     return gpu_utilization.gpu, memory_used
 
@@ -81,12 +90,14 @@ if __name__ == '__main__':
     
     # start docker
     client: docker.DockerClient = docker.from_env()
+    name = info['team_name'].replace(' ', '-')
     container_config = {
         'image': info['image'],
         'device_requests':[
             docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']])
         ],
         'network_mode': 'none',
+        'name': name,
         # 使用参赛团队中使用的最大值
         'shm_size': '32G',  
         'detach': True,
@@ -95,6 +106,7 @@ if __name__ == '__main__':
             f'{workplace_abs}/output': {'bind': '/output', 'mode': 'rw'},
             # '/host-data/test.sh': {'bind': '/docker-entrypoint.sh'}
             },
+        'user': 'root'
     }
     container: Container = client.containers.run(**container_config)
     print(container.name, container.id)
