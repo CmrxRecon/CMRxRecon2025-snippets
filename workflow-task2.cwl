@@ -2,7 +2,7 @@
 
 cwlVersion: v1.0
 class: Workflow
-label: <YOUR CHALLENGE> Evaluation
+label: Task2
 doc: >
   For CMRxRecon validation
 
@@ -54,7 +54,7 @@ steps:
       - id: results
 
   score:
-    run: steps/score-mapping.cwl
+    run: steps/score-task2.cwl
     in:
       - id: input_file
         source: "#download_submission/filepath"

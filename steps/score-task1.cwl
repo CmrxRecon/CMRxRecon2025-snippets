@@ -31,18 +31,18 @@ outputs:
       outputEval: $(JSON.parse(self[0].contents)['submission_status'])
       loadContents: true
 
-baseCommand: ["python3", "/app/Main_Score.py"]
+baseCommand: ["python3", "/app/Main_Score2024.py"]
 arguments:
-  - prefix: -f
+  - prefix: -i
     valueFrom: $(inputs.input_file.path)
   - prefix: -g
     valueFrom: /GT
   - prefix: -t
-    valueFrom: Cine
+    valueFrom: Task1
     # 此处根据task1还是task2来指定
-  - prefix: -r
-    valueFrom: results.json
+  - prefix: -o
+    valueFrom: ./
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn51471092/validate:latest
+    dockerPull: docker.synapse.org/syn54951257/validate:latest
