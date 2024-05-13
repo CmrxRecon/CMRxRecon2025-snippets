@@ -325,6 +325,7 @@ if __name__ == "__main__":
     start_time = time.time()
     unzipfile(submission_zip_path, output_dir)
     main(gt_dir = gt_dir, submission_unzipped_path = output_dir, tasknum = task_num)
+    os.system('touch better_log.zip')
     end_time = time.time()
     # 计算代码执行时间
     execution_time = end_time - start_time
