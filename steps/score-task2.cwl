@@ -19,7 +19,7 @@ outputs:
   - id: results
     type: File
     outputBinding:
-      glob: results.json
+      glob: Result/results.json
   - id: log_file
     type: File
     outputBinding:
@@ -27,7 +27,7 @@ outputs:
   - id: status
     type: string
     outputBinding:
-      glob: results.json
+      glob: Result/results.json
       outputEval: $(JSON.parse(self[0].contents)['submission_status'])
       loadContents: true
 

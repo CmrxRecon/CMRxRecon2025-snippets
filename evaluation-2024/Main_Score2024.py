@@ -323,9 +323,11 @@ if __name__ == "__main__":
     print(gt_dir)
 
     start_time = time.time()
-    unzipfile(submission_zip_path, output_dir)
+    # The submission file will be renamed, can't get it's formate type easily,
+    # so a zip file is required.
+    unzip(submission_zip_path, output_dir)
     main(gt_dir = gt_dir, submission_unzipped_path = output_dir, tasknum = task_num)
-    os.system('touch better_log.zip')
+    os.system('zip -r better_log.zip Result/*')
     end_time = time.time()
     # 计算代码执行时间
     execution_time = end_time - start_time
