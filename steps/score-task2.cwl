@@ -45,4 +45,4 @@ arguments:
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn51471092/validate:latest
+    dockerPull: dev.passer.zyheal.com:8087/playground/cmrxrecon2024-validation:latest
