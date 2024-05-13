@@ -40,6 +40,12 @@ def ssim(
         maxval = gt.max()
     return structural_similarity(gt, pred, data_range=maxval)
 
+def normalize_std(array):
+    """Normalize an array using mean and standard deviation."""
+    mean = np.mean(array)
+    std = np.std(array)
+    return (array - mean) / std
+
 
 def calmetric(pred_recon, gt_recon):
     if gt_recon.ndim == 4:
@@ -50,9 +56,13 @@ def calmetric(pred_recon, gt_recon):
         for i in range(gt_recon.shape[-2]):
             for j in range(gt_recon.shape[-1]):
                 pred, gt = pred_recon[:, :, i, j], gt_recon[:, :, i, j]
-                psnr_array[i, j] = psnr(gt / gt.max(), pred / pred.max())
-                ssim_array[i, j] = ssim(gt / gt.max(), pred / pred.max())
-                nmse_array[i, j] = nmse(gt / gt.max(), pred / pred.max())
+                # revise the normlization to a more stable way
+                pred_normalized = normalize_std(pred)
+                gt_normalized = normalize_std(gt)
+
+                psnr_array[i, j] = psnr(gt_normalized, pred_normalized)
+                ssim_array[i, j] = ssim(gt_normalized, pred_normalized)
+                nmse_array[i, j] = nmse(gt_normalized, pred_normalized)
     else:
         psnr_array = np.zeros((1, gt_recon.shape[-1]))
         ssim_array = np.zeros((1, gt_recon.shape[-1]))
@@ -60,9 +70,14 @@ def calmetric(pred_recon, gt_recon):
 
         for j in range(gt_recon.shape[-1]):
             pred, gt = pred_recon[:, :, j], gt_recon[:, :, j]
-            psnr_array[0,j] = psnr(gt / gt.max(), pred / pred.max())
-            ssim_array[0,j] = ssim(gt / gt.max(), pred / pred.max())
-            nmse_array[0,j] = nmse(gt / gt.max(), pred / pred.max())
+
+            # revise the normlization to a more stable way
+            pred_normalized = normalize_std(pred)
+            gt_normalized = normalize_std(gt)
+
+            psnr_array[0,j] = psnr(pred_normalized, gt_normalized)
+            ssim_array[0,j] = ssim(pred_normalized, gt_normalized)
+            nmse_array[0,j] = nmse(pred_normalized, gt_normalized)
 
     return psnr_array, ssim_array, nmse_array
 
