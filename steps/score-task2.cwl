@@ -31,17 +31,17 @@ outputs:
       outputEval: $(JSON.parse(self[0].contents)['submission_status'])
       loadContents: true
 
-baseCommand: ["python3", "/app/Main_Score.py"]
+baseCommand: ["python3", "/app/Main_Score2024.py"]
 arguments:
-  - prefix: -f
+  - prefix: -i
     valueFrom: $(inputs.input_file.path)
   - prefix: -g
     valueFrom: /GT
   - prefix: -t
-    valueFrom: Mapping
+    valueFrom: Task2
     # 此处根据task1还是task2来指定
-  - prefix: -r
-    valueFrom: results.json
+  - prefix: -o
+    valueFrom: ./
 
 hints:
   DockerRequirement:
