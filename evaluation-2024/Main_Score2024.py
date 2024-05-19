@@ -97,8 +97,12 @@ def main(gt_dir: str,
          submission_unzipped_path: str,
          tasknum: int = 1):
     # for validation, we read the random mapping from a csv file
-    # REPLY: 可以暂时用着这个目录
-    dataframe = pd.read_csv('/home/wangfw/CMRxRecon2024Organizer/Code/newID.csv')
+    dataframe = pd.read_csv(os.path.join(gt_dir, 'newID.csv'))
+
+    # read the quality control file
+    badcase = pd.read_csv(os.path.join(gt_dir,'ValSet_badcase.csv'))
+    badgtcases = badcase['gtcase'].unique()
+
 
     # placeholder for all metrics.
     Metrics = ['PSNR', "SSIM", "NMSE"]
@@ -145,7 +149,10 @@ def main(gt_dir: str,
         cases = os.listdir(gtpath)
         for Case in cases:
             gtdir = os.path.join(gtpath, Case)
-            print(Case)
+            # delete the bad case due to quality control
+            if Case in badgtcases:
+                continue
+            
             if SetType == 'ValidationSet':
             # get validation random 
                 Under1 = dataframe.loc[dataframe['file_info22'] == Case, 'file_info23'].item()
