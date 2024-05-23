@@ -165,7 +165,7 @@ def main(gt_dir: str,
             Underlist = [Under1, Under2, Under3]
             for file in filelist:
                 if not os.path.exists(os.path.join(gtdir, (file + '.mat'))):
-                    print('No file exist for ground truth: ', Modal, Case, file)
+                    print('GT case is excluded according to quality control: ', Modal, Case, file)
                     new_frame = pd.DataFrame({
                         'Case': [Case],
                         'File': [file],
@@ -173,7 +173,7 @@ def main(gt_dir: str,
                         'PSNR': [np.nan],
                         'SSIM': [np.nan],
                         'NMSE': [np.nan],
-                        'Comments': 'No file exist for ground truth'
+                        'Comments': 'GT case is excluded according to quality control'
                     }, index=[0])
                     ranks = pd.concat([ranks, new_frame], ignore_index=True)
                     continue
@@ -202,7 +202,7 @@ def main(gt_dir: str,
                     # get the mask from the suffix
                     # check wether the file exists，if not exist, give nan to all metrics
                     if not os.path.exists(os.path.join(recondir, filename)):
-                        print('No file exist for case, mask: ', Case, mask)
+                        print('No file exist for recon, mask: ', Case, mask)
                         new_frame = pd.DataFrame({
                             'Case': [Case],
                             'File': [file],
@@ -210,7 +210,7 @@ def main(gt_dir: str,
                             'PSNR': [np.nan],
                             'SSIM': [np.nan],
                             'NMSE': [np.nan],
-                            'Comments': 'No file exist for recon'
+                            'Comments': 'No file exists for recon. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/blob/main/CMRxReconDemo/run4Ranking.m'
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         continue
@@ -218,7 +218,7 @@ def main(gt_dir: str,
                     # calculate the metrics
                     # check whether the data is with the same dim
                     if gtmat.shape != reconmat.shape:
-                        print('The shape of the GT and Recon is not the same for case, mask: ', Case, mask)
+                        print('Shapes of GT and recon are not the same, mask: ', Case, mask)
                         new_frame = pd.DataFrame({
                             'Case': [Case],
                             'File': [file],
@@ -226,7 +226,7 @@ def main(gt_dir: str,
                             'PSNR': [np.nan],
                             'SSIM': [np.nan],
                             'NMSE': [np.nan],
-                            'Comments': 'The shape of the GT and Recon is not the same'
+                            'Comments': 'Shapes of GT and recon are not the same. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/tree/main/Submission'
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         continue
@@ -264,7 +264,7 @@ def main(gt_dir: str,
     # {Modality}_{undermasklist}_{Metrics}:
     # {num_file}_{Modality}_{undermasklist}
     # {All}_{Metrics}: 
-    num_all_files = ranks.loc[ranks['Comments']!= "No file exist for ground truth"].shape[0]
+    num_all_files = ranks.loc[ranks['Comments']!= "GT case is excluded according to quality control"].shape[0]
     num_good_files = ranks.loc[ranks['Comments'].isna()].shape[0]
 
     scores["Num_Files"] = str(num_good_files) + "/" + str(num_all_files)
