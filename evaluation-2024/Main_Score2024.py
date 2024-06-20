@@ -109,7 +109,7 @@ def main(gt_dir: str,
 
 
     # placeholder for all metrics.
-    Metrics = ["PSNR_Old", "SSIM_Old", "NMSE_Old", "PSNR_ADJ", "SSIM_ADJ", "NMSE_ADJ"]
+    Metrics = ["PSNR", "SSIM", "NMSE", "adj.PSNR", "adj.SSIM", "adj.NMSE"]
     PSNR_ALL, SSIM_ALL, NMSE_ALL = [], [], []
 
     # add placeholder for adj metrics
@@ -307,9 +307,9 @@ def main(gt_dir: str,
     scores[f"All_PSNR"] = mean_psnr_all
     scores[f"All_SSIM"] = mean_ssim_all
     scores[f"All_NMSE"] = mean_nmse_all
-    scores[f"All_PSNR_ADJ"] = mean_psnr_adj
-    scores[f"All_SSIM_ADJ"] = mean_ssim_adj
-    scores[f"All_NMSE_ADJ"] = mean_nmse_adj
+    scores[f"All_adj.PSNR"] = mean_psnr_adj
+    scores[f"All_adj.SSIM"] = mean_ssim_adj
+    scores[f"All_adj.NMSE"] = mean_nmse_adj
     # save the scores as a json
 
     with open(os.path.join(resultdir, "results.json"), "w") as out:
