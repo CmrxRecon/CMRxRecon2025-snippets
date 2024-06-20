@@ -44,7 +44,11 @@ def statis_metrics_and_num_files(ranks: pd.DataFrame,
     mean_psnr = round(df['PSNR'].mean(),4)
     mean_ssim = round(df['SSIM'].mean(),4)
     mean_nmse = round(df['NMSE'].mean(),4)
-    return mean_psnr, mean_ssim, mean_nmse, num_success_files, num_total_files
+    # add weighted metrics, sum up the metrics with success cases over total cases
+    adj_psnr = round(df['PSNR'].loc[df['Comments'].isna()].sum() /num_total_files, 4)
+    adj_ssim = round(df['SSIM'].loc[df['Comments'].isna()].sum() /num_total_files, 4)
+    adj_nmse = round(df['NMSE'].loc[df['Comments'].isna()].sum() /num_total_files, 4) 
+    return adj_psnr, adj_ssim, adj_nmse, mean_psnr, mean_ssim, mean_nmse, num_success_files, num_total_files
 
 def ungz(filename, output_dir):
     gz_file = gzip.GzipFile(filename)
@@ -105,8 +109,12 @@ def main(gt_dir: str,
 
 
     # placeholder for all metrics.
-    Metrics = ['PSNR', "SSIM", "NMSE"]
+    Metrics = ["PSNR", "SSIM", "NMSE", "adj.PSNR", "adj.SSIM", "adj.NMSE"]
     PSNR_ALL, SSIM_ALL, NMSE_ALL = [], [], []
+
+    # add placeholder for adj metrics
+    PSNR_ADJ, SSIM_ADJ, NMSE_ADJ = [], [], []
+
     # dict to write 
     scores = {}
     # for task 2, no Flow2d and BlackBlood
@@ -165,7 +173,7 @@ def main(gt_dir: str,
             Underlist = [Under1, Under2, Under3]
             for file in filelist:
                 if not os.path.exists(os.path.join(gtdir, (file + '.mat'))):
-                    print('No file exist for ground truth: ', Modal, Case, file)
+                    print('GT case is excluded according to quality control: ', Modal, Case, file)
                     new_frame = pd.DataFrame({
                         'Case': [Case],
                         'File': [file],
@@ -173,7 +181,7 @@ def main(gt_dir: str,
                         'PSNR': [np.nan],
                         'SSIM': [np.nan],
                         'NMSE': [np.nan],
-                        'Comments': 'No file exist for ground truth'
+                        'Comments': 'GT case is excluded according to quality control'
                     }, index=[0])
                     ranks = pd.concat([ranks, new_frame], ignore_index=True)
                     continue
@@ -202,7 +210,7 @@ def main(gt_dir: str,
                     # get the mask from the suffix
                     # check wether the file exists，if not exist, give nan to all metrics
                     if not os.path.exists(os.path.join(recondir, filename)):
-                        print('No file exist for case, mask: ', Case, mask)
+                        print('No file exist for recon, mask: ', Case, mask)
                         new_frame = pd.DataFrame({
                             'Case': [Case],
                             'File': [file],
@@ -210,7 +218,7 @@ def main(gt_dir: str,
                             'PSNR': [np.nan],
                             'SSIM': [np.nan],
                             'NMSE': [np.nan],
-                            'Comments': 'No file exist for recon'
+                            'Comments': 'No file exists for recon. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/blob/main/CMRxReconDemo/run4Ranking.m'
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         continue
@@ -218,7 +226,7 @@ def main(gt_dir: str,
                     # calculate the metrics
                     # check whether the data is with the same dim
                     if gtmat.shape != reconmat.shape:
-                        print('The shape of the GT and Recon is not the same for case, mask: ', Case, mask)
+                        print('Shapes of GT and recon are not the same, mask: ', Case, mask)
                         new_frame = pd.DataFrame({
                             'Case': [Case],
                             'File': [file],
@@ -226,7 +234,7 @@ def main(gt_dir: str,
                             'PSNR': [np.nan],
                             'SSIM': [np.nan],
                             'NMSE': [np.nan],
-                            'Comments': 'The shape of the GT and Recon is not the same'
+                            'Comments': 'Shapes of GT and recon are not the same. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/tree/main/Submission'
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         continue
@@ -264,20 +272,23 @@ def main(gt_dir: str,
     # {Modality}_{undermasklist}_{Metrics}:
     # {num_file}_{Modality}_{undermasklist}
     # {All}_{Metrics}: 
-    num_all_files = ranks.loc[ranks['Comments']!= "No file exist for ground truth"].shape[0]
+    num_all_files = ranks.loc[ranks['Comments']!= "GT case is excluded according to quality control"].shape[0]
     num_good_files = ranks.loc[ranks['Comments'].isna()].shape[0]
 
     scores["Num_Files"] = str(num_good_files) + "/" + str(num_all_files)
     
     for modality in Modality:
         for undermask in undermasklist:
-            mean_psnr, mean_ssim, mean_nmse, num_success_files, num_total_files = statis_metrics_and_num_files(ranks = ranks, modal = modality.lower(), kus = undermask)
+            adj_psnr, adj_ssim, ajd_nmse, mean_psnr, mean_ssim, mean_nmse, num_success_files, num_total_files = statis_metrics_and_num_files(ranks = ranks, modal = modality.lower(), kus = undermask)
             key = f"num_file_{modality}_{undermask}"
             scores[key] = str(num_success_files) + "/" + str(num_total_files)
-            metric_values = [mean_psnr, mean_ssim, mean_nmse]
+            metric_values = [mean_psnr, mean_ssim, mean_nmse, adj_psnr, adj_ssim, ajd_nmse]
             PSNR_ALL.append(mean_psnr)
             SSIM_ALL.append(mean_ssim)
             NMSE_ALL.append(mean_nmse)
+            PSNR_ADJ.append(adj_psnr)
+            SSIM_ADJ.append(adj_ssim)
+            NMSE_ADJ.append(ajd_nmse)
             for metric, metric_value in zip(Metrics, metric_values):
                 key = f"{modality}_{undermask}_{metric}"
                 scores[key] = metric_value
@@ -288,10 +299,17 @@ def main(gt_dir: str,
     mean_ssim_all = round(np.nanmean(SSIM_ALL),4)
     mean_nmse_all = round(np.nanmean(NMSE_ALL),4)
 
+    mean_psnr_adj = round(np.nanmean(PSNR_ADJ),4)
+    mean_ssim_adj = round(np.nanmean(SSIM_ADJ),4)
+    mean_nmse_adj = round(np.nanmean(NMSE_ADJ),4)
+
     # Assign these mean values to the 'All' category in the scores dictionary
     scores[f"All_PSNR"] = mean_psnr_all
     scores[f"All_SSIM"] = mean_ssim_all
     scores[f"All_NMSE"] = mean_nmse_all
+    scores[f"All_adj.PSNR"] = mean_psnr_adj
+    scores[f"All_adj.SSIM"] = mean_ssim_adj
+    scores[f"All_adj.NMSE"] = mean_nmse_adj
     # save the scores as a json
 
     with open(os.path.join(resultdir, "results.json"), "w") as out:
