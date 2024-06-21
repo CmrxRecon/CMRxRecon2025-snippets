@@ -109,11 +109,12 @@ def main(gt_dir: str,
 
 
     # placeholder for all metrics.
-    Metrics = ["PSNR", "SSIM", "NMSE", "adj.PSNR", "adj.SSIM", "adj.NMSE"]
+    # Metrics = ["PSNR", "SSIM", "NMSE", "adj.PSNR", "adj.SSIM", "adj.NMSE"]
+    Metrics = ["PSNR", "SSIM", "NMSE", "adj.SSIM",]
     PSNR_ALL, SSIM_ALL, NMSE_ALL = [], [], []
-
+    SSIM_ADJ = []
     # add placeholder for adj metrics
-    PSNR_ADJ, SSIM_ADJ, NMSE_ADJ = [], [], []
+    # PSNR_ADJ, SSIM_ADJ, NMSE_ADJ = [], [], []
 
     # dict to write 
     scores = {}
@@ -282,13 +283,14 @@ def main(gt_dir: str,
             adj_psnr, adj_ssim, ajd_nmse, mean_psnr, mean_ssim, mean_nmse, num_success_files, num_total_files = statis_metrics_and_num_files(ranks = ranks, modal = modality.lower(), kus = undermask)
             key = f"num_file_{modality}_{undermask}"
             scores[key] = str(num_success_files) + "/" + str(num_total_files)
-            metric_values = [mean_psnr, mean_ssim, mean_nmse, adj_psnr, adj_ssim, ajd_nmse]
+            metric_values = [mean_psnr, mean_ssim, mean_nmse, adj_ssim]
+            # metric_values = [mean_psnr, mean_ssim, mean_nmse, adj_psnr, adj_ssim, ajd_nmse]
             PSNR_ALL.append(mean_psnr)
             SSIM_ALL.append(mean_ssim)
             NMSE_ALL.append(mean_nmse)
-            PSNR_ADJ.append(adj_psnr)
+            # PSNR_ADJ.append(adj_psnr)
             SSIM_ADJ.append(adj_ssim)
-            NMSE_ADJ.append(ajd_nmse)
+            # NMSE_ADJ.append(ajd_nmse)
             for metric, metric_value in zip(Metrics, metric_values):
                 key = f"{modality}_{undermask}_{metric}"
                 scores[key] = metric_value
@@ -299,17 +301,17 @@ def main(gt_dir: str,
     mean_ssim_all = round(np.nanmean(SSIM_ALL),4)
     mean_nmse_all = round(np.nanmean(NMSE_ALL),4)
 
-    mean_psnr_adj = round(np.nanmean(PSNR_ADJ),4)
+    # mean_psnr_adj = round(np.nanmean(PSNR_ADJ),4)
     mean_ssim_adj = round(np.nanmean(SSIM_ADJ),4)
-    mean_nmse_adj = round(np.nanmean(NMSE_ADJ),4)
+    # mean_nmse_adj = round(np.nanmean(NMSE_ADJ),4)
 
     # Assign these mean values to the 'All' category in the scores dictionary
     scores[f"All_PSNR"] = mean_psnr_all
     scores[f"All_SSIM"] = mean_ssim_all
     scores[f"All_NMSE"] = mean_nmse_all
-    scores[f"All_adj.PSNR"] = mean_psnr_adj
+    # scores[f"All_adj.PSNR"] = mean_psnr_adj
     scores[f"All_adj.SSIM"] = mean_ssim_adj
-    scores[f"All_adj.NMSE"] = mean_nmse_adj
+    # scores[f"All_adj.NMSE"] = mean_nmse_adj
     # save the scores as a json
 
     with open(os.path.join(resultdir, "results.json"), "w") as out:
