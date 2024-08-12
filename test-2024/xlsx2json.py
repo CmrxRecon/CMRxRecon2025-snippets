@@ -1,0 +1,31 @@
+import json
+import os
+import pandas as pd
+
+def xlsx_to_json(file_path):
+    # 读取xlsx文件
+    df = pd.read_excel(file_path, engine='openpyxl')
+    # json_data = df.to_json(orient='records')
+    json_data = df.to_dict(orient='records')
+    parsed_data = []
+    for r in json_data:
+        d = {
+            "uid": r['序号'],
+            "team_name": r["1、Team Name"],
+            "email": r["2、Email"],
+            "type": r['3、Task Type'],
+            "image": r['4、Docker image address'],
+            "synapse_address": r['5、Your synapse project address'],
+            "submit_time": r['提交答卷时间']
+        }
+        parsed_data.append(d)
+    return parsed_data
+
+if __name__ == '__main__':
+    xlsx_path = '/home/xuzq/git/CMRxRecon2024-snippets/test-2024/test-data/275666388_按文本_CMRxRecon2024_Test_phase_submission_3_3.xlsx'
+    json_dir = '/home/xuzq/git/CMRxRecon2024-snippets/test-2024/test-data/json'
+    for i in xlsx_to_json(xlsx_path):
+        print(i)
+        json_name = f'{i["uid"]}.json'
+        with open(os.path.join(json_dir, json_name), 'w') as f:
+            json.dump(i, f, ensure_ascii=False, indent=4)
