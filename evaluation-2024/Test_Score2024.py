@@ -52,9 +52,6 @@ def main(gt_dir: str,
          result_output_path: str,
          tasknum: int = 1):
     # read the quality control file
-    badcase = pd.read_csv(os.path.join(gt_dir,'TestSet_badcase.csv'))
-    badgtcases = badcase['gtcase'].unique()
-
     # placeholder for all metrics.
     # Metrics = ["PSNR", "SSIM", "NMSE", "adj.PSNR", "adj.SSIM", "adj.NMSE"]
     Metrics = ["PSNR", "SSIM", "NMSE"]
@@ -103,9 +100,7 @@ def main(gt_dir: str,
         # get the cases from gtpath startswith P.
         for Case in cases:
             gtdir = os.path.join(gtpath, Case)
-            # delete the bad case due to quality control
-            if Case in badgtcases:
-                continue
+            # for gt, bad cases have already been excluded
             # get the file list 
             for file in filelist:
                 if not os.path.exists(os.path.join(gtdir, (file + '.mat'))):
@@ -122,7 +117,7 @@ def main(gt_dir: str,
                     ranks = pd.concat([ranks, new_frame], ignore_index=True)
                     continue
                 gtmat = loadmat(os.path.join(gtdir, (file + '.mat')))
-                # for test, get the reconstructed files from the input dir? 
+                # for test, get the reconstructed files from the input dir
                 sorted_masklist = []
                 # get the file list from the input dir
                 underdir = os.path.join('input',
