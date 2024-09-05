@@ -32,3 +32,7 @@ RUN pip3 install -r requirements.txt
 ## Make Docker container executable
 ENTRYPOINT ["/opt/conda/bin/python", "inference.py"]
 ```
+
+## status.json
+
+status: infered, tested, notified
