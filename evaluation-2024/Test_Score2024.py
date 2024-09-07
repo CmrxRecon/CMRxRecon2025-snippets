@@ -41,9 +41,14 @@ def statis_metrics_and_num_files(ranks: pd.DataFrame,
     mean_ssim = round(df['SSIM'].mean(),4)
     mean_nmse = round(df['NMSE'].mean(),4)
     # add weighted metrics, sum up the metrics with success cases over total cases
-    adj_psnr = round(df['PSNR'].loc[df['Comments'].isna()].sum() /num_total_files, 4)
-    adj_ssim = round(df['SSIM'].loc[df['Comments'].isna()].sum() /num_total_files, 4)
-    adj_nmse = round(df['NMSE'].loc[df['Comments'].isna()].sum() /num_total_files, 4) 
+    if num_success_files == 0:
+        adj_psnr = np.nan
+        adj_ssim = np.nan
+        adj_nmse = np.nan
+    else:
+        adj_psnr = round(df['PSNR'].loc[df['Comments'].isna()].sum() /num_total_files, 4)
+        adj_ssim = round(df['SSIM'].loc[df['Comments'].isna()].sum() /num_total_files, 4)
+        adj_nmse = round(df['NMSE'].loc[df['Comments'].isna()].sum() /num_total_files, 4) 
     return adj_psnr, adj_ssim, adj_nmse, mean_psnr, mean_ssim, mean_nmse, num_success_files, num_total_files
 
 
@@ -137,7 +142,7 @@ def main(input_dir: str,
                 # TODO: for the test, not three of each mask are generated, we should read all the undersampled_files
                 for mask in sorted_masklist:
                     # change the casenum due to different suffix. 
-                    recondir = os.path.join('output',
+                    recondir = os.path.join(result_output_path,
                                             Modal, 
                                             SetType, 
                                             Taskx, 
