@@ -97,7 +97,13 @@ def main(input_dir: str,
                               Modal, 
                               SetType, 
                               Taskx)
-        cases = os.listdir(gtpath)
+        # get the input dir, because some subs may be missing for demo test
+        # use the input dir to get the cases
+        underpath = os.path.join(input_dir,
+                                 Modal,
+                                 SetType,
+                                 Mask_Task)         
+        cases = os.listdir(underpath)
         # get the cases from gtpath startswith P.
         for Case in cases:
             gtdir = os.path.join(gtpath, Case)
@@ -121,10 +127,7 @@ def main(input_dir: str,
                 # for test, get the reconstructed files from the input dir
                 sorted_masklist = []
                 # get the file list from the input dir
-                underdir = os.path.join(input_dir,
-                                        Modal,
-                                        SetType,
-                                        Mask_Task,
+                underdir = os.path.join(underpath,
                                         Case)
                 masklist = os.listdir(underdir)
                 # sort the data startwith the file name
