@@ -48,7 +48,8 @@ def statis_metrics_and_num_files(ranks: pd.DataFrame,
 
 
 
-def main(gt_dir: str,
+def main(input_dir: str,
+         gt_dir: str,
          result_output_path: str,
          tasknum: int = 1):
     # read the quality control file
@@ -120,7 +121,7 @@ def main(gt_dir: str,
                 # for test, get the reconstructed files from the input dir
                 sorted_masklist = []
                 # get the file list from the input dir
-                underdir = os.path.join('input',
+                underdir = os.path.join(input_dir,
                                         Modal,
                                         SetType,
                                         Mask_Task,
@@ -263,6 +264,7 @@ if __name__ == "__main__":
     # output_after_recon (default): /output/...
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', '--groundtruth', type=str, required=True, help='Path to the GroundTruth')
+    parser.add_argument('-i', '--input', type=str, required=True, help='Path to the Input')
     parser.add_argument('-t', '--task', type=str, required=True, help='Task1 or Task2')
     parser.add_argument('-o', '--output', type=str, required=False, default='./', help='Path of output saving folder')
     args = parser.parse_args()
@@ -276,10 +278,10 @@ if __name__ == "__main__":
     # FW: Done.
     output_dir = args.output
     gt_dir = args.groundtruth
-    print(gt_dir)
+    input_dir = args.input
 
     start_time = time.time()
-    main(gt_dir = gt_dir, result_output_path = output_dir, tasknum = task_num)
+    main(input_dir = input_dir, gt_dir = gt_dir, result_output_path = output_dir, tasknum = task_num)
     end_time = time.time()
     # 计算代码执行时间
     execution_time = end_time - start_time
