@@ -137,16 +137,29 @@ def main(input_dir: str,
                 masklist = os.listdir(underdir)
                 # sort the data startwith the file name
                 masklist = [mask for mask in masklist if mask.startswith(file + '_mask_')]
-                masklist = [mask.split('_')[-1].split('.')[0] for mask in masklist]
-                sorted_masklist.append(masklist[0])
+                sorted_masklist = [mask.split('_')[-1].split('.')[0] for mask in masklist]
                 # TODO: for the test, not three of each mask are generated, we should read all the undersampled_files
                 for mask in sorted_masklist:
                     # change the casenum due to different suffix. 
+                    # add the comments whether the recondir exists or not
                     recondir = os.path.join(result_output_path,
                                             Modal, 
                                             SetType, 
                                             Taskx, 
                                             Case)
+                    if not os.path.exists(recondir):
+                        print('Output dir not follow Modal/TestSet/Taskx/Case: ', Modal, SetType, Taskx, Case)
+                        new_frame = pd.DataFrame({
+                            'Case': [Case],
+                            'File': [file],
+                            'KUS': [mask],
+                            'PSNR': [np.nan],
+                            'SSIM': [np.nan],
+                            'NMSE': [np.nan],
+                            'Comments': 'Output dir not follow Modal/TestSet/Taskx/Case'
+                        }, index=[0])
+                        ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                        continue
                     filename = file + '_kus_' + mask + '.mat'
                     # get the mask from the suffix
                     # check wether the file exists，if not exist, give nan to all metrics
@@ -162,38 +175,52 @@ def main(input_dir: str,
                             'Comments': 'No file exists for recon. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/blob/main/CMRxReconDemo/run4Ranking.m'
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
-                        continue
-                    reconmat = loadmat(os.path.join(recondir, filename))
-                    # calculate the metrics
-                    # check whether the data is with the same dim
-                    if gtmat.shape != reconmat.shape:
-                        print('Shapes of GT and recon are not the same, mask: ', Case, mask)
-                        new_frame = pd.DataFrame({
-                            'Case': [Case],
-                            'File': [file],
-                            'KUS': [mask],
-                            'PSNR': [np.nan],
-                            'SSIM': [np.nan],
-                            'NMSE': [np.nan],
-                            'Comments': 'Shapes of GT and recon are not the same. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/tree/main/Submission'
-                        }, index=[0])
-                        ranks = pd.concat([ranks, new_frame], ignore_index=True)
-                        continue
-                    psnr, ssim, nmse = calmetric(gtmat, reconmat)
-                    # take mean for each case
-                    psnr_mean = np.mean(psnr)
-                    ssim_mean = np.mean(ssim)
-                    nmse_mean = np.mean(nmse)
-                    # save the metrics to the pandas frame
-                    new_frame = pd.DataFrame({
-                        'Case': [Case],
-                        'File': [file],
-                        'KUS': [mask],
-                        'PSNR': [psnr_mean],
-                        'SSIM': [ssim_mean],
-                        'NMSE': [nmse_mean]
-                    }, index=[0])        
-                    ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                    else: 
+                        try:
+                            reconmat = loadmat(os.path.join(recondir, filename))
+                        except:
+                            print('Error in reading the file, mask: ', Case, mask)
+                            new_frame = pd.DataFrame({
+                                'Case': [Case],
+                                'File': [file],
+                                'KUS': [mask],
+                                'PSNR': [np.nan],
+                                'SSIM': [np.nan],
+                                'NMSE': [np.nan],
+                                'Comments': 'recon file corrupted'
+                            }, index=[0])
+                            ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                            continue
+                        # calculate the metrics
+                        # check whether the data is with the same dim
+                        if gtmat.shape != reconmat.shape:
+                            print('Shapes of GT and recon are not the same, mask: ', Case, mask)
+                            new_frame = pd.DataFrame({
+                                'Case': [Case],
+                                'File': [file],
+                                'KUS': [mask],
+                                'PSNR': [np.nan],
+                                'SSIM': [np.nan],
+                                'NMSE': [np.nan],
+                                'Comments': 'Shapes of GT and recon are not the same. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/tree/main/Submission'
+                            }, index=[0])
+                            ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                        else:
+                            psnr, ssim, nmse = calmetric(gtmat, reconmat)
+                            # take mean for each case
+                            psnr_mean = np.nanmean(psnr)
+                            ssim_mean = np.nanmean(ssim)
+                            nmse_mean = np.nanmean(nmse)
+                            # save the metrics to the pandas frame
+                            new_frame = pd.DataFrame({
+                                'Case': [Case],
+                                'File': [file],
+                                'KUS': [mask],
+                                'PSNR': [psnr_mean],
+                                'SSIM': [ssim_mean],
+                                'NMSE': [nmse_mean]
+                            }, index=[0])        
+                            ranks = pd.concat([ranks, new_frame], ignore_index=True)
 
     # save the ranks to the csv file
     # REPLY：命令行参数给定了output folder，存放在output目录下即可

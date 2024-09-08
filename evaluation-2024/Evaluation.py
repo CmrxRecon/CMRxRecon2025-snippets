@@ -43,7 +43,7 @@ def ssim(
 def normalize_std(array):
     """Normalize an array using mean and standard deviation."""
     mean = np.mean(array)
-    std = np.std(array)
+    std = np.std(array) + 1e-8
     return (array - mean) / std
 
 
