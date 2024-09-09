@@ -148,7 +148,7 @@ def main(input_dir: str,
                                             Taskx, 
                                             Case)
                     if not os.path.exists(recondir):
-                        print('Output dir not follow Modal/TestSet/Taskx/Case: ', Modal, SetType, Taskx, Case)
+                        print('No recon dir or recon dir does not follow {}/{}/{}/{}.'.format(Modal, SetType, Taskx, Case))
                         new_frame = pd.DataFrame({
                             'Case': [Case],
                             'File': [file],
@@ -156,7 +156,7 @@ def main(input_dir: str,
                             'PSNR': [np.nan],
                             'SSIM': [np.nan],
                             'NMSE': [np.nan],
-                            'Comments': 'Output dir not follow Modal/TestSet/Taskx/Case'
+                            'Comments': 'No recon dir or recon dir does not follow {}/{}/{}/{}.'.format(Modal, SetType, Taskx, Case)
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         continue
@@ -172,7 +172,7 @@ def main(input_dir: str,
                             'PSNR': [np.nan],
                             'SSIM': [np.nan],
                             'NMSE': [np.nan],
-                            'Comments': 'No file exists for recon. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/blob/main/CMRxReconDemo/run4Ranking.m'
+                            'Comments': 'Recon dir exists, but recon file misses.',
                         }, index=[0])
                         ranks = pd.concat([ranks, new_frame], ignore_index=True)
                     else: 
@@ -187,14 +187,14 @@ def main(input_dir: str,
                                 'PSNR': [np.nan],
                                 'SSIM': [np.nan],
                                 'NMSE': [np.nan],
-                                'Comments': 'recon file corrupted'
+                                'Comments': 'Recon file corrupts.',
                             }, index=[0])
                             ranks = pd.concat([ranks, new_frame], ignore_index=True)
                             continue
                         # calculate the metrics
                         # check whether the data is with the same dim
                         if gtmat.shape != reconmat.shape:
-                            print('Shapes of GT and recon are not the same, mask: ', Case, mask)
+                            print('Undersampled {} {} got different shape of GT {} and recon {}'.format(mask, Case, gtmat.shape, reconmat.shape))
                             new_frame = pd.DataFrame({
                                 'Case': [Case],
                                 'File': [file],
@@ -202,7 +202,7 @@ def main(input_dir: str,
                                 'PSNR': [np.nan],
                                 'SSIM': [np.nan],
                                 'NMSE': [np.nan],
-                                'Comments': 'Shapes of GT and recon are not the same. Please refer to https://github.com/CmrxRecon/CMRxRecon2024/tree/main/Submission'
+                                'Comments': 'Shapes of GT {}, recon {}'.format(gtmat.shape, reconmat.shape),
                             }, index=[0])
                             ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         else:
@@ -301,7 +301,7 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--groundtruth', type=str, required=True, help='Path to the GroundTruth')
     parser.add_argument('-i', '--input', type=str, required=True, help='Path to the Input')
     parser.add_argument('-t', '--task', type=str, required=True, help='Task1 or Task2')
-    parser.add_argument('-o', '--output', type=str, required=False, default='./', help='Path of output saving folder')
+    parser.add_argument('-o', '--output', type=str, required=True, default='./', help='Path of output saving folder')
     args = parser.parse_args()
 
     # task_num = 2 # 1/2
