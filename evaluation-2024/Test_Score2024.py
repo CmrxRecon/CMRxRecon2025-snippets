@@ -206,21 +206,35 @@ def main(input_dir: str,
                             }, index=[0])
                             ranks = pd.concat([ranks, new_frame], ignore_index=True)
                         else:
-                            psnr, ssim, nmse = calmetric(gtmat, reconmat)
-                            # take mean for each case
-                            psnr_mean = np.nanmean(psnr)
-                            ssim_mean = np.nanmean(ssim)
-                            nmse_mean = np.nanmean(nmse)
-                            # save the metrics to the pandas frame
-                            new_frame = pd.DataFrame({
-                                'Case': [Case],
-                                'File': [file],
-                                'KUS': [mask],
-                                'PSNR': [psnr_mean],
-                                'SSIM': [ssim_mean],
-                                'NMSE': [nmse_mean]
-                            }, index=[0])        
-                            ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                            try: 
+                                psnr, ssim, nmse = calmetric(gtmat, reconmat)
+                                # take mean for each case
+                                psnr_mean = np.nanmean(psnr)
+                                ssim_mean = np.nanmean(ssim)
+                                nmse_mean = np.nanmean(nmse)
+                                # save the metrics to the pandas frame
+                                new_frame = pd.DataFrame({
+                                    'Case': [Case],
+                                    'File': [file],
+                                    'KUS': [mask],
+                                    'PSNR': [psnr_mean],
+                                    'SSIM': [ssim_mean],
+                                    'NMSE': [nmse_mean]
+                                }, index=[0])        
+                                ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                            except:
+                                print('The recon matrix is not saved as magnitude', Case, mask)
+                                new_frame = pd.DataFrame({
+                                    'Case': [Case],
+                                    'File': [file],
+                                    'KUS': [mask],
+                                    'PSNR': [np.nan],
+                                    'SSIM': [np.nan],
+                                    'NMSE': [np.nan],
+                                    'Comments': 'The recon matrix is not saved as magnitude.',
+                                }, index=[0])
+                                ranks = pd.concat([ranks, new_frame], ignore_index=True)
+                                continue
 
     # save the ranks to the csv file
     # REPLY：命令行参数给定了output folder，存放在output目录下即可
