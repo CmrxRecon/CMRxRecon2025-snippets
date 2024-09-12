@@ -27,23 +27,25 @@ class ExecutationRequest:
 client = docker.from_env()
 api = client.api
 
-def pull_and_run(r: ExecutationRequest, workplace: os.PathLike):
+def pull_and_run(r: ExecutationRequest, workplace: os.PathLike, gpu_id="0"):
     image = r.image
     # image = 'dev.passer.zyheal.com:8087/passer/passer-vtk-rendering-server:CI-devel_latest'
     logger.info(f'pulling image: {image}')
     client.images.pull(image)
-    FIXED_NAME = 'test-phase'
+    FIXED_NAME = f'test-phase-{r.uid}'
     container = client.containers.run(image,
                          volumes=[
-                             f'{input_dir}:/input:ro',
+                             f'{input_dir}:/input/:ro',
                              f'{workplace}/infer:/output'
                          ],
                          name=FIXED_NAME,
                         stderr=True,
+                        network_mode=None,
+                        shm_size='32g',
                         #  remove=True,
                         # tty=True,
                         detach=True,
-                         device_requests=[DeviceRequest(device_ids=["0"], capabilities=[['gpu']])],
+                         device_requests=[DeviceRequest(device_ids=[gpu_id], capabilities=[['gpu']])],
                         #  entrypoint='ls -alh /input'
                          )
     # print(str(logs_bytes, 'utf-8'))
@@ -80,11 +82,16 @@ CMRxRecon Team
 
 
 if __name__ == '__main__':
-    input_dir = '/home2/wangfw/ToZiqiang/TestPhase/input/'
-    output_dir = '/home2/cmrxrecon2024/test-phase/output'
+    import sys
+    # 通过命令行指定python
+    uid = sys.argv[1]
+    gpu_id = sys.argv[2]
+
+    input_dir = '/mnt/raid/CMRxRecon2024/input-demo/input'
+    output_dir = '/home/guanli/CMRxRecon2024-snippets/test-2024/output'
     
     s = status.load()
-    with open('./test-data/json/9.json') as f:
+    with open(f'./test-data/json/{uid}.json') as f:
         request = json.load(f)
     r = ExecutationRequest(request)
     uid = str(r.uid)
@@ -94,7 +101,7 @@ if __name__ == '__main__':
     s[uid] = info
     current_status = info['status']
     if current_status == status.UNKNOWN:
-        pull_and_run(r, workplace)
+        pull_and_run(r, workplace, gpu_id=gpu_id)
         s[uid]['status'] = status.INFERED
         status.save(s)
 

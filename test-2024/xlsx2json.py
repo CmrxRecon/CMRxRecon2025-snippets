@@ -23,8 +23,11 @@ def xlsx_to_json(file_path):
     return parsed_data
 
 if __name__ == '__main__':
-    xlsx_path = '/home/zhangxy/CMRxRecon2024-snippets/test-2024/test-data/275666388_按文本_CMRxRecon2024 Test phase submission_9_4.xlsx'
-    json_dir = '/home/zhangxy/CMRxRecon2024-snippets/test-2024/test-data/json'
+    xlsx_path = '/home/guanli/CMRxRecon2024-snippets/test-2024/test-data/275666388_按文本_CMRxRecon2024 Test phase submission_15_8.xlsx'
+    xlsx_path = '/home/guanli/CMRxRecon2024-snippets/test-2024/test-data/275666388_按文本_CMRxRecon2024 Test phase submission_18_11.xlsx'
+    import sys
+    xlsx_path = sys.argv[1]
+    json_dir = '/home/guanli/CMRxRecon2024-snippets/test-2024/test-data/json'
     for i in xlsx_to_json(xlsx_path):
         print(i)
         json_name = f'{i["uid"]}.json'
