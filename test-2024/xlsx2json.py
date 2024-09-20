@@ -31,5 +31,8 @@ if __name__ == '__main__':
     for i in xlsx_to_json(xlsx_path):
         print(i)
         json_name = f'{i["uid"]}.json'
-        with open(os.path.join(json_dir, json_name), 'w') as f:
+        full_path = os.path.join(json_dir, json_name)
+        if os.path.exists(full_path):
+            continue
+        with open(full_path, 'w') as f:
             json.dump(i, f, ensure_ascii=False, indent=4)

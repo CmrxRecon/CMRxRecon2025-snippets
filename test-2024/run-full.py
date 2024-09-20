@@ -8,7 +8,7 @@ from docker.types.containers import DeviceRequest
 import status
 from t4u import mail
 
-FULL_SET = False
+FULL_SET = True
 
 logger = logging.getLogger(__name__)
 
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     if FULL_SET:
         input_dir = f'{storage_dir}/test-input'
         output_dir = f'{storage_dir}/test-output'
-        state_json = f'{repo_dir}/test-2024/test-data/full-status.json'
+        state_json = f'{repo_dir}/test-2024/test-data/full-status.json'    
     else:
         input_dir = f'{storage_dir}/input-demo/input'
         output_dir = f'{storage_dir}/output-demo'
@@ -136,10 +136,15 @@ if __name__ == '__main__':
     with open(f'./test-data/json/{uid}.json') as f:
         request = json.load(f)
     r = ExecutationRequest(request)
+
+    if FULL_SET:
+        entrypoint = f'python /app/evaluation-2024/Test_Score2024.py -g /CMRxRecon2024/test-GT/ -i /CMRxRecon2024/test-input/ -t {r.type[:5]} -o /output'
+    else:
+        entrypoint = f'python /app/evaluation-2024/Test_Score2024.py -g /CMRxRecon2024/test-GT/ -i /CMRxRecon2024/input-demo/input/ -t {r.type[:5]} -o /output'
+        
     uid = str(r.uid)
     workplace = os.path.join(output_dir, uid)
     os.makedirs(workplace, exist_ok=True)
-    entrypoint = f'python /app/evaluation-2024/Test_Score2024.py -g /CMRxRecon2024/test-GT/ -i /CMRxRecon2024/input-demo/input/ -t {r.type[:5]} -o /output'
     info = s.get(uid, {'status': 'unknown'})
     s[uid] = info
     current_status = info['status']
