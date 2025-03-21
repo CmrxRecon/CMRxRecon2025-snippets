@@ -1,5 +1,4 @@
 ## Start from this Docker image
-## for the version, we recommend the version xx.xx less than 22.02
 FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-devel
 
 ## Set workdir in Docker Container
