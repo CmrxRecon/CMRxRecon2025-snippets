@@ -31,7 +31,7 @@ steps:
         source: "#submitterUploadSynId"
       # TODO: replace `valueFrom` with the admin user ID or admin team ID
       - id: principalid
-        valueFrom: "3500413" 
+        valueFrom: "3533218" 
       - id: permissions
         valueFrom: "download"
       - id: synapse_config
@@ -73,8 +73,9 @@ steps:
         source: "#synapseConfig"
       - id: log_file
         source: "#score/log_file"
+      # synapse id of the log_file store folder
       - id: upload_folder_id
-        valueFrom: "syn59453422"
+        valueFrom: "syn66492705"
       - id: file_name
         source: "#submissionId"
     out: []
