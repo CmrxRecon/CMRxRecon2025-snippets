@@ -116,7 +116,10 @@ def unrar(filename, output_dir):
 def unzipfile(fpth, output_dir):
     """Automatically extract gz/tar/zip/rar files and return the extraction root directory."""
     if '.' not in fpth:
-        raise Exception('Unsupported format')
+        try:
+            unzip(fpth, output_dir)
+        except:
+            raise Exception('Failed to extract file, Unsupported format')
     suffix = fpth.split('.')[-1].lower()
     if suffix == 'gz':
         newf = ungz(fpth, output_dir)
