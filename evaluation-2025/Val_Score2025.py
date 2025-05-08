@@ -118,6 +118,7 @@ def unzipfile(fpth, output_dir):
     if '.' not in fpth:
         try:
             unzip(fpth, output_dir)
+            return output_dir
         except:
             raise Exception('Failed to extract file, Unsupported format')
     suffix = fpth.split('.')[-1].lower()
@@ -353,7 +354,7 @@ if __name__ == '__main__':
             manufacturer_map=manufacturer_map,
             disease_map=disease_map
         )
-    os.system('zip -r better_log.zip Result/*')
+    os.system(f'zip -r better_log.zip {args.output}/Result/*')
 
 '''
 python Val_Score2025_v3.py \
