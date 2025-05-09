@@ -2,7 +2,7 @@
 
 cwlVersion: v1.0
 class: Workflow
-label: Task2
+label: Task1-Multi-contrast
 doc: >
   For CMRxRecon validation
 
@@ -31,7 +31,7 @@ steps:
         source: "#submitterUploadSynId"
       # TODO: replace `valueFrom` with the admin user ID or admin team ID
       - id: principalid
-        valueFrom: "3472053"  # CMRxRecon admin team id
+        valueFrom: "3533218" 
       - id: permissions
         valueFrom: "download"
       - id: synapse_config
@@ -73,8 +73,9 @@ steps:
         source: "#synapseConfig"
       - id: log_file
         source: "#score/log_file"
+      # synapse id of the detail log_file store folder
       - id: upload_folder_id
-        valueFrom: "syn59454751"
+        valueFrom: "syn66492709"
       - id: file_name
         source: "#submissionId"
     out: []
