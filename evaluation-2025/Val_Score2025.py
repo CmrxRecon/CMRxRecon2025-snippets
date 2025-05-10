@@ -216,6 +216,11 @@ def process_task(challenge_root, gt_root, result_root, task,
 
     # Task1: aggregate by SheetCenter + SheetManufacturer
     if task == 'TaskR1' and 'SheetCenter' in df.columns and 'SheetManufacturer' in df.columns:
+
+        psnr_means = []
+        ssim_means = []
+        nmse_means = []
+
         for (center, vendor), group in valid.groupby(['SheetCenter', 'SheetManufacturer']):
             key = f"{center}_{vendor}"
             num_total_files = num_total_files_R1.get((center, vendor), 0)
@@ -227,13 +232,27 @@ def process_task(challenge_root, gt_root, result_root, task,
 
             # Adjusted mean: sum / expected count
             if num_total_files:
-                summary[f'{key}_PSNR_adj'] = round(group['PSNR'].sum() / num_total_files, 4)
-                summary[f'{key}_SSIM_adj'] = round(group['SSIM'].sum() / num_total_files, 4)
-                summary[f'{key}_NMSE_adj'] = round(group['NMSE'].mean() * (2 - len(group) / num_total_files), 4)
+                mean_psnr = group['PSNR'].sum() / num_total_files
+                mean_ssim = group['SSIM'].sum() / num_total_files
+                mean_nmse = group['NMSE'].mean() * (2 - len(group) / num_total_files)
+                summary[f'{key}_PSNR_adj'] = round(mean_psnr, 4)
+                summary[f'{key}_SSIM_adj'] = round(mean_ssim, 4)
+                summary[f'{key}_NMSE_adj'] = round(mean_nmse, 4)
+                psnr_means.append(mean_psnr)
+                ssim_means.append(mean_ssim)
+                nmse_means.append(mean_nmse)
+        summary['Mean_of_all_centers_PSNR_adj'] = round(sum(psnr_means) / len(psnr_means), 4)
+        summary['Mean_of_all_centers_SSIM_adj'] = round(sum(ssim_means) / len(ssim_means), 4)
+        summary['Mean_of_all_centers_NMSE_adj'] = round(sum(nmse_means) / len(nmse_means), 4)
 
     # Task2: aggregate by disease list
     if task == 'TaskR2' and 'Diseases' in df.columns:
         all_diseases = set(d for lst in valid['Diseases'] for d in lst)
+
+        psnr_means = []
+        ssim_means = []
+        nmse_means = []
+
         for disease in sorted(all_diseases):
             group = valid[valid['Diseases'].apply(lambda lst: disease in lst)]
             num_total_files = num_total_files_R2.get(disease, 0)
@@ -244,9 +263,19 @@ def process_task(challenge_root, gt_root, result_root, task,
             #summary[f'{disease}_NMSE'] = round(group['NMSE'].mean(), 4)
             # Adjusted mean: sum / expected count
             if num_total_files:
-                summary[f'{disease}_PSNR_adj'] = round(group['PSNR'].sum() / num_total_files, 4)
-                summary[f'{disease}_SSIM_adj'] = round(group['SSIM'].sum() / num_total_files, 4)
-                summary[f'{disease}_NMSE_adj'] = round(group['NMSE'].mean() * (2 - len(group) / num_total_files), 4)
+                mean_psnr = group['PSNR'].sum() / num_total_files
+                mean_ssim = group['SSIM'].sum() / num_total_files
+                mean_nmse = group['NMSE'].mean() * (2 - len(group) / num_total_files)
+                summary[f'{disease}_PSNR_adj'] = round(mean_psnr, 4)
+                summary[f'{disease}_SSIM_adj'] = round(mean_ssim, 4)
+                summary[f'{disease}_NMSE_adj'] = round(mean_nmse, 4)
+                psnr_means.append(mean_psnr)
+                ssim_means.append(mean_ssim)
+                nmse_means.append(mean_nmse)
+        
+        summary['Mean_of_all_diseases_PSNR_adj'] = round(sum(psnr_means) / len(psnr_means), 4)
+        summary['Mean_of_all_diseases_SSIM_adj'] = round(sum(ssim_means) / len(ssim_means), 4)
+        summary['Mean_of_all_diseases_NMSE_adj'] = round(sum(nmse_means) / len(nmse_means), 4)
 
     # Output results, with filenames separated by task
     result_dir = os.path.join(result_root, 'Result')
@@ -357,7 +386,7 @@ if __name__ == '__main__':
     os.system(f'zip -r better_log.zip {args.output}/Result/*')
 
 '''
-python Val_Score2025_v3.py \
+python Val_Score2025.py \
   -i /SSDHome/share/Submission.zip \
   -t TaskR2 \
   -g /SSDHome/share/GroundTruth_for_Validation \
