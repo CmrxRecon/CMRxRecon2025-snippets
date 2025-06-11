@@ -78,7 +78,7 @@ def calmetric(pred_recon, gt_recon):
                 psnr_array[i, j] = psnr(gt_normalized, pred_normalized)
                 ssim_array[i, j] = ssim(gt_normalized, pred_normalized)
                 nmse_array[i, j] = nmse(gt_normalized, pred_normalized)
-    else:
+    elif gt_recon.ndim == 3:
         psnr_array = np.zeros((1, gt_recon.shape[-1]))
         ssim_array = np.zeros((1, gt_recon.shape[-1]))
         nmse_array = np.zeros((1, gt_recon.shape[-1]))
@@ -93,6 +93,22 @@ def calmetric(pred_recon, gt_recon):
             psnr_array[0,j] = psnr(pred_normalized, gt_normalized)
             ssim_array[0,j] = ssim(pred_normalized, gt_normalized)
             nmse_array[0,j] = nmse(pred_normalized, gt_normalized)
+    
+    elif gt_recon.ndim == 2:
+        psnr_array = np.zeros((1))
+        ssim_array = np.zeros((1))
+        nmse_array = np.zeros((1))
+
+
+        pred, gt = pred_recon, gt_recon
+
+        # revise the normlization to a more stable way
+        pred_normalized = normalize_percentile(pred)
+        gt_normalized = normalize_percentile(gt)
+
+        psnr_array = psnr(pred_normalized, gt_normalized)
+        ssim_array  = ssim(pred_normalized, gt_normalized)
+        nmse_array = nmse(pred_normalized, gt_normalized)
 
     return psnr_array, ssim_array, nmse_array
 

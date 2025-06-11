@@ -45,8 +45,12 @@ def compute_all_files_counts(gt_root: str, disease_map: dict):
     """
     r1_counts = {}
     r2_counts = {}
+    s1_counts = {}
+    s2_counts = {}
     total_R1 = 0
     total_R2 = 0
+    total_S1 = 0
+    total_S2 = 0
     modalities = [
         'BlackBlood','Cine','Flow2d','LGE',
         'Mapping','Perfusion','T1rho','T1w','T2w'
@@ -84,8 +88,47 @@ def compute_all_files_counts(gt_root: str, disease_map: dict):
     for key_id, count in patient_counts.items():
         for disease in disease_map.get(key_id, []):
             r2_counts[disease] = r2_counts.get(disease, 0) + count
+    
+    # TaskS1: count per disease
+    patient_counts = {}
+    for modal in modalities:
+        pattern = os.path.join(
+            gt_root, 'TaskS1', 'MultiCoil', modal,
+            'ValidationSet', 'FullSample_TaskS1',
+            '*', '*', '*', '*.mat'
+        )
+        for fpath in glob.glob(pattern):
+            total_S1 += 1
+            parts = fpath.split(os.sep)
+            center, vendor, patient = parts[-4], parts[-3], parts[-2]
+            key_id = make_key(center, vendor, patient)
+            patient_counts[key_id] = patient_counts.get(key_id, 0) + 1
 
-    return r1_counts, r2_counts,total_R1,total_R2
+    for key_id, count in patient_counts.items():
+        for disease in disease_map.get(key_id, []):
+            s1_counts[disease] = s1_counts.get(disease, 0) + count
+    
+    # TaskS2: count per disease
+    patient_counts = {}
+    for modal in modalities:
+        pattern = os.path.join(
+            gt_root, 'TaskS2', 'MultiCoil', modal,
+            'ValidationSet', 'FullSample_TaskS2',
+            '*', '*', '*', '*.mat'
+        )
+        for fpath in glob.glob(pattern):
+            total_S2 += 1
+            parts = fpath.split(os.sep)
+            center, vendor, patient = parts[-4], parts[-3], parts[-2]
+            key_id = make_key(center, vendor, patient)
+            patient_counts[key_id] = patient_counts.get(key_id, 0) + 1
+
+    for key_id, count in patient_counts.items():
+        for disease in disease_map.get(key_id, []):
+            s2_counts[disease] = s2_counts.get(disease, 0) + count
+
+
+    return r1_counts, r2_counts,s1_counts, s2_counts,total_R1,total_R2,total_S1,total_S2
 
 def ungz(filename, output_dir):
     """Extract a .gz file and return the extracted file path"""
@@ -146,7 +189,10 @@ def compute_metrics(gt_file, recon_file):
     return np.mean(psnr), np.mean(ssim), np.mean(nmse), None
 
 def process_task(challenge_root, gt_root, result_root, task,
-                 num_total_files_R1=None, num_total_files_R2=None,total_R1=None,total_R2=None,
+                 num_total_files_R1=None, num_total_files_R2=None,
+                 num_total_files_S1=None, num_total_files_S2=None,
+                 total_R1=None,total_R2=None,
+                 total_S1=None,total_S2=None,
                  center_map=None, manufacturer_map=None, disease_map=None):
     SetType = 'ValidationSet'
     undersample_task = f'UnderSample_{task}'
@@ -196,7 +242,7 @@ def process_task(challenge_root, gt_root, result_root, task,
             if task == 'TaskR1' and center_map and manufacturer_map:
                 rec['SheetCenter'] = center_map.get(key_id, 'Unknown')
                 rec['SheetManufacturer'] = manufacturer_map.get(key_id, 'Unknown')
-            if task == 'TaskR2' and disease_map is not None:
+            if (task == 'TaskR2'or task == 'TaskS1'or task == 'TaskS2') and disease_map is not None:
                 rec['Diseases'] = disease_map.get(key_id, [])
             records.append(rec)
 
@@ -213,6 +259,10 @@ def process_task(challenge_root, gt_root, result_root, task,
         summary = {'Num_Files': f"{len(valid)}/{total_R1}"}
     elif task == 'TaskR2':
         summary = {'Num_Files': f"{len(valid)}/{total_R2}"}
+    elif task == 'TaskS1':
+        summary = {'Num_Files': f"{len(valid)}/{total_S1}"}
+    elif task == 'TaskS2':
+        summary = {'Num_Files': f"{len(valid)}/{total_S2}"}
 
     # Task1: aggregate by SheetCenter + SheetManufacturer
     if task == 'TaskR1' and 'SheetCenter' in df.columns and 'SheetManufacturer' in df.columns:
@@ -246,7 +296,7 @@ def process_task(challenge_root, gt_root, result_root, task,
         summary['Mean_of_all_centers_NMSE_adj'] = round(sum(nmse_means) / len(nmse_means), 4)
 
     # Task2: aggregate by disease list
-    if task == 'TaskR2' and 'Diseases' in df.columns:
+    if (task == 'TaskR2' or task == 'TaskS1' or task == 'TaskS2') and 'Diseases' in df.columns:
         all_diseases = set(d for lst in valid['Diseases'] for d in lst)
 
         psnr_means = []
@@ -255,7 +305,13 @@ def process_task(challenge_root, gt_root, result_root, task,
 
         for disease in sorted(all_diseases):
             group = valid[valid['Diseases'].apply(lambda lst: disease in lst)]
-            num_total_files = num_total_files_R2.get(disease, 0)
+            if task == 'TaskR2':
+                num_total_files = num_total_files_R2.get(disease, 0)
+            elif task == 'TaskS1':
+                num_total_files = num_total_files_S1.get(disease, 0)
+            elif task == 'TaskS2':
+                num_total_files = num_total_files_S2.get(disease, 0)
+            
             submitted = len(group)
             summary[f'{disease}_Num'] = f"{submitted}/{num_total_files}"
             #summary[f'{disease}_PSNR'] = round(group['PSNR'].mean(), 4)
@@ -325,7 +381,7 @@ if __name__ == '__main__':
     root = extracted
     found = False
     for dirpath, dirnames, _ in os.walk(extracted):
-        if 'TaskR1' in dirnames or 'TaskR2' in dirnames:
+        if 'TaskR1' in dirnames or 'TaskR2' in dirnames or 'TaskS1' in dirnames or 'TaskS2' in dirnames:
             root = dirpath
             found = True
             break
@@ -349,7 +405,7 @@ if __name__ == '__main__':
     manufacturer_map = {}
     disease_map = {}
     tasks = []
-    for task in ('TaskR1', 'TaskR2'):
+    for task in ('TaskR1', 'TaskR2','TaskS1','TaskS2'):
         if os.path.isdir(os.path.join(root, task)):
             tasks.append(task)
             df_sheet = pd.read_excel(xls, sheet_name=task, dtype=str)
@@ -359,7 +415,7 @@ if __name__ == '__main__':
                 if task == 'TaskR1':
                     center_map[key_id] = row['Center']
                     manufacturer_map[key_id] = row['Manufacturer']
-                elif task == 'TaskR2':
+                elif task == 'TaskR2'or task == 'TaskS1'or task == 'TaskS2' :
                     diseases = [row.get(f'Disease{i}') for i in range(1, 5)]
                     #diseases = [d for d in diseases if pd.notna(d) and d != '']
                     diseases =  [
@@ -370,7 +426,7 @@ if __name__ == '__main__':
                     # Remove duplicates and sort
                     disease_map[key_id] = diseases
 
-    num_total_files_R1, num_total_files_R2,total_R1,total_R2 = compute_all_files_counts(gt_root, disease_map)
+    num_total_files_R1, num_total_files_R2,num_total_files_S1,num_total_files_S2,total_R1,total_R2,total_S1,total_S2 = compute_all_files_counts(gt_root, disease_map)
 
     if  args.task in tasks:
         print(f"=== Processing {args.task} ===")
@@ -378,7 +434,10 @@ if __name__ == '__main__':
             root, gt_root, args.output, args.task,
             num_total_files_R1,
             num_total_files_R2,
+            num_total_files_S1,
+            num_total_files_S2,
             total_R1,total_R2,
+            total_S1,total_S2,
             center_map=center_map,
             manufacturer_map=manufacturer_map,
             disease_map=disease_map
@@ -388,8 +447,8 @@ if __name__ == '__main__':
 '''
 python Val_Score2025.py \
   -i /SSDHome/share/Submission.zip \
-  -t TaskR2 \
+  -t TaskS2 \
   -g /SSDHome/share/GroundTruth_for_Validation \
   -o /SSDHome/share/Evaluation_Result \
-  -e /SSDHome/home/huangmk/evaluation_platform/evaluation-2025/CMRxRecon2025_ValidationData_TaskR1_TaskR2_Disease_Info.xlsx
+  -e /SSDHome/home/huangmk/evaluation_platform/evaluation-2025/CMRxRecon2025_ValidationData_TaskR1_TaskR2_TaskS1_TaskS2_Disease_Info.xlsx
 '''
